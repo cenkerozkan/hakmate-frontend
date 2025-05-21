@@ -13,6 +13,8 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import ForgotPassword from './ForgotPassword';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
+import { useNavigate } from 'react-router-dom';
+import { AuthAPI } from '../api/api';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -33,6 +35,19 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 export default function SignInCard() {
+ const navigate = useNavigate();
+
+  React.useEffect(() => {
+    AuthAPI.getMe()
+      .then(() => {
+        // Kullanıcı giriş yapmış, ana sayfaya yönlendir
+        navigate('/');
+      })
+      .catch(() => {
+        // Giriş yapılmamış, sayfa normal açılır
+      });
+  }, [navigate]);
+
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
@@ -47,17 +62,33 @@ export default function SignInCard() {
     setOpen(false);
   };
 
-  const handleSubmit = (event) => {
-    if (emailError || passwordError) {
-      event.preventDefault();
-      return;
-    }
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get('email');
+    const password = formData.get('password');
+
+    const response = await fetch('http://localhost:3001/api/auth/signin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
     });
+
+    if (response.ok) {
+      const data = await response.json();
+      const token = data.session.access_token;
+
+      // Token'ı sakla
+      sessionStorage.setItem('access_token', token);
+
+      // Kullanıcıyı yönlendir
+      window.location.href = '/';
+    } else {
+      console.error('Giriş başarısız');
+    }
   };
+
 
   const validateInputs = () => {
     const email = document.getElementById('email');

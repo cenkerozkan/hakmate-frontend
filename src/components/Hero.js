@@ -12,7 +12,7 @@ import { styled } from '@mui/material/styles';
 
 const StyledBox = styled('div')(({ theme }) => ({
   alignSelf: 'center',
-  width: '100%',
+  width: '70%',
   height: 400,
   marginTop: theme.spacing(8),
   borderRadius: (theme.vars || theme).shape.borderRadius,
@@ -25,7 +25,7 @@ const StyledBox = styled('div')(({ theme }) => ({
   backgroundSize: 'cover',
   [theme.breakpoints.up('sm')]: {
     marginTop: theme.spacing(10),
-    height: 700,
+    height: 400,
   },
   ...theme.applyStyles('dark', {
     boxShadow: '0 0 24px 12px hsla(210, 100%, 25%, 0.2)',

@@ -16,6 +16,8 @@ import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from '../components/CustomIcons';
+import { AuthAPI } from '../api/api';
+import { useNavigate } from 'react-router-dom';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -60,17 +62,33 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignUp(props) {
+ const navigate = useNavigate();
+
+  React.useEffect(() => {
+    AuthAPI.getMe()
+      .then(() => {
+        // Kullanıcı giriş yapmış, ana sayfaya yönlendir
+        navigate('/');
+      })
+      .catch(() => {
+        // Giriş yapılmamış, sayfa normal açılır
+      });
+  }, [navigate]);
+
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+  const [lastNameError, setLastNameError] = React.useState(false);
+  const [lastNameErrorMessage, setLastNameErrorMessage] = React.useState('');
 
   const validateInputs = () => {
     const email = document.getElementById('email');
     const password = document.getElementById('password');
     const name = document.getElementById('name');
+    const lastName = document.getElementById('lastName');
 
     let isValid = true;
 
@@ -101,21 +119,38 @@ export default function SignUp(props) {
       setNameErrorMessage('');
     }
 
+    if (!lastName.value || lastName.value.length < 1) {
+      setLastNameError(true);
+      setLastNameErrorMessage('Soyisim girilmesi zorunludur.');
+      isValid = false;
+    } else {
+      setLastNameError(false);
+      setLastNameErrorMessage('');
+    }
+
     return isValid;
   };
 
-  const handleSubmit = (event) => {
-    if (nameError || emailError || passwordError) {
-      event.preventDefault();
-      return;
-    }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!validateInputs()) return;
+
     const data = new FormData(event.currentTarget);
-    console.log({
+    const userData = {
       name: data.get('name'),
-      lastName: data.get('lastName'),
+      surname: data.get('lastName'),
       email: data.get('email'),
       password: data.get('password'),
-    });
+    };
+
+    try {
+      const response = await AuthAPI.signUp(userData);
+      alert('Kayıt başarılı!');
+    } catch (error) {
+      const message = error.response?.data?.message || 'Bilinmeyen hata';
+      alert(`Kayıt başarısız: ${message}`);
+    }
   };
 
   return (
@@ -140,17 +175,29 @@ export default function SignUp(props) {
             sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
           >
             <FormControl>
-              <FormLabel htmlFor="name">Tam İsim</FormLabel>
+              <FormLabel htmlFor="name">Ad</FormLabel>
               <TextField
-                autoComplete="name"
+                autoComplete="given-name"
                 name="name"
                 required
                 fullWidth
                 id="name"
-                placeholder="İsim Soyisminiz"
+                placeholder="Adınız"
                 error={nameError}
                 helperText={nameErrorMessage}
-                color={nameError ? 'error' : 'primary'}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel htmlFor="lastName">Soyad</FormLabel>
+              <TextField
+                autoComplete="family-name"
+                name="lastName"
+                required
+                fullWidth
+                id="lastName"
+                placeholder="Soyadınız"
+                error={lastNameError}
+                helperText={lastNameErrorMessage}
               />
             </FormControl>
             <FormControl>
@@ -162,10 +209,8 @@ export default function SignUp(props) {
                 placeholder="sizin@epostadresiniz.com"
                 name="email"
                 autoComplete="email"
-                variant="outlined"
                 error={emailError}
                 helperText={emailErrorMessage}
-                color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
             <FormControl>
@@ -178,24 +223,15 @@ export default function SignUp(props) {
                 type="password"
                 id="password"
                 autoComplete="new-password"
-                variant="outlined"
                 error={passwordError}
                 helperText={passwordErrorMessage}
-                color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
             <FormControlLabel
               control={<Checkbox value="allowExtraEmails" color="primary" />}
-              label="Kayıt işleminizi tamamlamak için kişisel verilerinizin anonimleştirilerek analiz ve istatistik amaçlı üçüncü taraflarla paylaşılmasına onay vermeniz gerekmektedir.
-Bu veriler kimliğinizi belirlemeyecek şekilde kullanılacaktır.
-Devam etmeniz halinde bu durumu kabul etmiş sayılırsınız."
+              label="Kişisel verilerinizin anonim olarak analiz amaçlı kullanılmasını kabul ediyorsunuz."
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              onClick={validateInputs}
-            >
+            <Button type="submit" fullWidth variant="contained">
               Kayıt Ol
             </Button>
           </Box>

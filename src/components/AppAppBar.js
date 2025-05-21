@@ -1,19 +1,23 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; // useNavigate ekledim
 import { styled, alpha } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
-import MenuItem from '@mui/material/MenuItem';
-import Drawer from '@mui/material/Drawer';
+import {
+  AppBar,
+  Toolbar,
+  Box,
+  Button,
+  IconButton,
+  Container,
+  Divider,
+  MenuItem,
+  Drawer,
+  Typography,
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ColorModeIconDropdown from '../shared-theme/ColorModeIconDropdown';
 import Sitemark from './SitemarkIcon';
+import { AuthAPI } from '../api/api';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -32,7 +36,9 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 }));
 
 export default function AppAppBar() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -42,6 +48,27 @@ export default function AppAppBar() {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    AuthAPI.getMe()
+      .then((res) => {
+        setUser(res.data.user.user_metadata);
+      })
+      .catch(() => {
+        setUser(null);
+      });
+  }, []);
+
+  const handleSignOut = async () => {
+    try {
+      await AuthAPI.signOut();
+      sessionStorage.removeItem('access_token'); // token temizle
+      setUser(null);
+      navigate('/'); // ana sayfaya yönlendir
+    } catch (error) {
+      console.error('Çıkış yaparken hata:', error);
     }
   };
 
@@ -86,19 +113,33 @@ export default function AppAppBar() {
               alignItems: 'center',
             }}
           >
-            <Link to="/sign-in">
-              <Button color="primary" variant="text" size="small">
-                Giriş Yap
-              </Button>
-            </Link>
-            <Link to="/sign-up">
-              <Button color="primary" variant="contained" size="small">
-                Kayıt Ol
-              </Button>
-            </Link>
+            {user ? (
+              <>
+                <Typography variant="body2" color="text.primary">
+                  Hoş geldiniz, {user.name} {user.surname}
+                </Typography>
+                <Button color="primary" variant="outlined" size="small" onClick={handleSignOut}>
+                  Çıkış Yap
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/sign-in">
+                  <Button color="primary" variant="text" size="small">
+                    Giriş Yap
+                  </Button>
+                </Link>
+                <Link to="/sign-up">
+                  <Button color="primary" variant="contained" size="small">
+                    Kayıt Ol
+                  </Button>
+                </Link>
+              </>
+            )}
             <ColorModeIconDropdown />
           </Box>
 
+          {/* Mobile Menu */}
           <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>
             <ColorModeIconDropdown size="medium" />
             <IconButton aria-label="Menu button" onClick={toggleDrawer(true)}>
@@ -115,12 +156,7 @@ export default function AppAppBar() {
               }}
             >
               <Box sx={{ p: 2, backgroundColor: 'background.default' }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                  }}
-                >
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                   <IconButton onClick={toggleDrawer(false)}>
                     <CloseRoundedIcon />
                   </IconButton>
@@ -131,20 +167,37 @@ export default function AppAppBar() {
                 <MenuItem onClick={() => { scrollToSection('highlights'); setOpen(false); }}>Öne Çıkanlar</MenuItem>
                 <MenuItem onClick={() => { scrollToSection('faq'); setOpen(false); }}>SSS</MenuItem>
                 <Divider sx={{ my: 3 }} />
-                <MenuItem>
-                  <Link to="/sign-up">
-                    <Button color="primary" variant="contained" fullWidth>
-                      Kayıt Ol
-                    </Button>
-                  </Link>
-                </MenuItem>
-                <MenuItem>
-                  <Link to="/sign-in">
-                    <Button color="primary" variant="outlined" fullWidth>
-                      Giriş Yap
-                    </Button>
-                  </Link>
-                </MenuItem>
+                {user ? (
+                  <>
+                    <MenuItem>
+                      <Typography variant="body2" sx={{ mx: 'auto' }}>
+                        Hoş geldiniz, {user.name}
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem>
+                      <Button fullWidth onClick={handleSignOut}>
+                        Çıkış Yap
+                      </Button>
+                    </MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem>
+                      <Link to="/sign-up">
+                        <Button color="primary" variant="contained" fullWidth>
+                          Kayıt Ol
+                        </Button>
+                      </Link>
+                    </MenuItem>
+                    <MenuItem>
+                      <Link to="/sign-in">
+                        <Button color="primary" variant="outlined" fullWidth>
+                          Giriş Yap
+                        </Button>
+                      </Link>
+                    </MenuItem>
+                  </>
+                )}
               </Box>
             </Drawer>
           </Box>
