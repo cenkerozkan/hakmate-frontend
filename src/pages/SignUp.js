@@ -18,7 +18,7 @@ import { SitemarkIcon } from '../components/CustomIcons';
 import { AuthAPI } from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import Toast from '../components/Toast';
-import { useToast } from '../shared-theme/customizations/useToast';
+import { useToast } from '../hooks/useToast';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',

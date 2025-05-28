@@ -25,4 +25,22 @@ export const AuthAPI = {
   signOut: () => axiosInstance.post('/auth/signout'),
 };
 
+export const LawOfficesAPI = {
+  // Supabase'den yakındaki hukuk bürolarını getir
+  getNearbyOffices: (lat, lng, radius = 5) => 
+    axiosInstance.get('/law-offices/nearby', {
+      params: { lat, lng, radius }
+    }),
+
+  // Google'dan yakındaki hukuk bürolarını getir
+  getNearbyOfficesFromGoogle: (lat, lng, radius = 5) => 
+    axiosInstance.get('/law-offices/nearby-google', {
+      params: { lat, lng, radius }
+    }),
+
+  // Tüm hukuk bürolarını getir
+  getAllOffices: () => 
+    axiosInstance.get('/law-offices'),
+};
+
 export default axiosInstance;

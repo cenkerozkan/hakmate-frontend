@@ -76,7 +76,7 @@ export default function FAQ() {
             aria-controls="panel2d-content"
             id="panel2d-header"
           >
-            <Typography component="span" variant="subtitle2">
+            {/* <Typography component="span" variant="subtitle2">
               Ürünü iade edebilir miyim?
             </Typography>
           </AccordionSummary>
@@ -99,7 +99,7 @@ export default function FAQ() {
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel3d-content"
             id="panel3d-header"
-          >
+          > */}
             <Typography component="span" variant="subtitle2">
               Hakmate’i benzerlerinden ayıran nedir?
             </Typography>
@@ -126,7 +126,7 @@ export default function FAQ() {
             id="panel4d-header"
           >
             <Typography component="span" variant="subtitle2">
-              Garanti sunuyor musunuz?
+              Doğru cevap garantisi sunuyor musunuz?
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -135,9 +135,7 @@ export default function FAQ() {
               gutterBottom
               sx={{ maxWidth: { sm: '100%', md: '70%' } }}
             >
-              Evet. Tüm aboneliklerimiz, kullanım süresi boyunca teknik destek ve
-               sistem sürekliliği garantisi kapsamındadır. Herhangi bir teknik 
-               aksaklıkta destek ekibimizle iletişime geçebilirsiniz.
+              Cevaplarımız hukuk uzmanları tarafından denetlenir ve en yüksek doğrulukta bilgi sunmayı hedefler. Ancak, verilen cevapların kesinliği konusunda garanti veremeyiz. Hukuki bir işlem öncesinde bir uzmana danışmanızı öneririz.
             </Typography>
           </AccordionDetails>
         </Accordion>
