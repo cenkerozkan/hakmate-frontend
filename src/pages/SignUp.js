@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
@@ -15,9 +14,11 @@ import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from '../components/CustomIcons';
+import { SitemarkIcon } from '../components/CustomIcons';
 import { AuthAPI } from '../api/api';
 import { useNavigate } from 'react-router-dom';
+import Toast from '../components/Toast';
+import { useToast } from '../shared-theme/customizations/useToast';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -62,7 +63,8 @@ const SignUpContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignUp(props) {
- const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { toast, showSuccess, showError, hideToast } = useToast();
 
   React.useEffect(() => {
     AuthAPI.getMe()
@@ -83,6 +85,7 @@ export default function SignUp(props) {
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
   const [lastNameError, setLastNameError] = React.useState(false);
   const [lastNameErrorMessage, setLastNameErrorMessage] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const validateInputs = () => {
     const email = document.getElementById('email');
@@ -136,6 +139,8 @@ export default function SignUp(props) {
 
     if (!validateInputs()) return;
 
+    setIsLoading(true);
+
     const data = new FormData(event.currentTarget);
     const userData = {
       name: data.get('name'),
@@ -146,10 +151,27 @@ export default function SignUp(props) {
 
     try {
       const response = await AuthAPI.signUp(userData);
-      alert('Kayıt başarılı!');
+      
+      if (response.data && response.data.success) {
+        showSuccess('Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...');
+        
+        // Kısa bir gecikme ile giriş sayfasına yönlendir
+        setTimeout(() => {
+          navigate('/sign-in');
+        }, 2000);
+      } else {
+        showError('Kayıt başarısız: Beklenmeyen yanıt formatı');
+      }
     } catch (error) {
-      const message = error.response?.data?.message || 'Bilinmeyen hata';
-      alert(`Kayıt başarısız: ${message}`);
+      console.error('Kayıt hatası:', error);
+      
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Kayıt işlemi sırasında bir hata oluştu';
+      
+      showError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -185,6 +207,7 @@ export default function SignUp(props) {
                 placeholder="Adınız"
                 error={nameError}
                 helperText={nameErrorMessage}
+                disabled={isLoading}
               />
             </FormControl>
             <FormControl>
@@ -198,6 +221,7 @@ export default function SignUp(props) {
                 placeholder="Soyadınız"
                 error={lastNameError}
                 helperText={lastNameErrorMessage}
+                disabled={isLoading}
               />
             </FormControl>
             <FormControl>
@@ -211,6 +235,7 @@ export default function SignUp(props) {
                 autoComplete="email"
                 error={emailError}
                 helperText={emailErrorMessage}
+                disabled={isLoading}
               />
             </FormControl>
             <FormControl>
@@ -225,17 +250,32 @@ export default function SignUp(props) {
                 autoComplete="new-password"
                 error={passwordError}
                 helperText={passwordErrorMessage}
+                disabled={isLoading}
               />
             </FormControl>
             <FormControlLabel
               control={<Checkbox value="allowExtraEmails" color="primary" />}
               label="Kişisel verilerinizin anonim olarak analiz amaçlı kullanılmasını kabul ediyorsunuz."
+              disabled={isLoading}
             />
-            <Button type="submit" fullWidth variant="contained">
-              Kayıt Ol
+            <Button 
+              type="submit" 
+              fullWidth 
+              variant="contained"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Kayıt yapılıyor...' : 'Kayıt Ol'}
             </Button>
           </Box>
         </Card>
+
+        {/* Toast Notification */}
+        <Toast
+          open={toast.open}
+          message={toast.message}
+          severity={toast.severity}
+          onClose={hideToast}
+        />
       </SignUpContainer>
     </AppTheme>
   );

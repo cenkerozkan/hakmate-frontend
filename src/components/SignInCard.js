@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import MuiCard from '@mui/material/Card';
 import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -12,9 +11,11 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import ForgotPassword from './ForgotPassword';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
+import { SitemarkIcon } from './CustomIcons';
 import { useNavigate } from 'react-router-dom';
 import { AuthAPI } from '../api/api';
+import Toast from './Toast';
+import { useToast } from '../shared-theme/customizations/useToast';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -35,7 +36,8 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 export default function SignInCard() {
- const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { toast, showSuccess, showError, hideToast } = useToast();
 
   React.useEffect(() => {
     AuthAPI.getMe()
@@ -53,6 +55,7 @@ export default function SignInCard() {
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -65,30 +68,59 @@ export default function SignInCard() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
-    const email = formData.get('email');
-    const password = formData.get('password');
+    if (!validateInputs()) {
+      return;
+    }
 
-    const response = await fetch('http://localhost:3001/api/auth/signin', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+    setIsLoading(true);
 
-    if (response.ok) {
-      const data = await response.json();
-      const token = data.session.access_token;
+    try {
+      const formData = new FormData(event.currentTarget);
+      const email = formData.get('email');
+      const password = formData.get('password');
 
-      // Token'ı sakla
-      sessionStorage.setItem('access_token', token);
+      // AuthAPI servisini kullan
+      const response = await AuthAPI.signIn({
+        email,
+        password
+      });
 
-      // Kullanıcıyı yönlendir
-      window.location.href = '/';
-    } else {
-      console.error('Giriş başarısız');
+      // Response yapısı: { success: true, message: "...", data: { user, session } }
+      if (response.data && response.data.success && response.data.data) {
+        const { session } = response.data.data;
+        
+        if (session && session.access_token) {
+          // Token'ı sakla
+          sessionStorage.setItem('access_token', session.access_token);
+          
+          // Başarılı giriş mesajı
+          showSuccess('Giriş başarılı! Yönlendiriliyorsunuz...');
+          
+          // Kısa bir gecikme ile yönlendir
+          setTimeout(() => {
+            navigate('/');
+          }, 1500);
+        } else {
+          console.error('Session veya access_token bulunamadı:', response.data);
+          showError('Giriş başarısız: Oturum bilgileri alınamadı');
+        }
+      } else {
+        console.error('Beklenmeyen response yapısı:', response.data);
+        showError('Giriş başarısız: Geçersiz yanıt formatı');
+      }
+    } catch (error) {
+      console.error('Giriş hatası:', error);
+      
+      // Hata mesajını kullanıcıya göster
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Giriş işlemi sırasında bir hata oluştu';
+      
+      showError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
-
 
   const validateInputs = () => {
     const email = document.getElementById('email');
@@ -98,7 +130,7 @@ export default function SignInCard() {
 
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
+      setEmailErrorMessage('Lütfen geçerli bir e-posta adresi giriniz.');
       isValid = false;
     } else {
       setEmailError(false);
@@ -107,7 +139,7 @@ export default function SignInCard() {
 
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
+      setPasswordErrorMessage('Şifre en az 6 karakter uzunluğunda olmalıdır.');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -118,6 +150,7 @@ export default function SignInCard() {
   };
 
   return (
+    <>
     <Card variant="outlined">
       <Link href="/">
         <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
@@ -152,6 +185,7 @@ export default function SignInCard() {
             fullWidth
             variant="outlined"
             color={emailError ? 'error' : 'primary'}
+            disabled={isLoading}
           />
         </FormControl>
         <FormControl>
@@ -175,20 +209,26 @@ export default function SignInCard() {
             type="password"
             id="password"
             autoComplete="current-password"
-            autoFocus
             required
             fullWidth
             variant="outlined"
             color={passwordError ? 'error' : 'primary'}
+            disabled={isLoading}
           />
         </FormControl>
         <FormControlLabel
           control={<Checkbox value="remember" color="primary" />}
           label="Beni hatırla"
+          disabled={isLoading}
         />
         <ForgotPassword open={open} handleClose={handleClose} />
-        <Button type="submit" fullWidth variant="contained" onClick={validateInputs}>
-          Giriş Yap
+        <Button 
+          type="submit" 
+          fullWidth 
+          variant="contained"
+          disabled={isLoading}
+        >
+          {isLoading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
         </Button>
         <Typography sx={{ textAlign: 'center' }}>
           Hesabınız yok mu?{' '}
@@ -204,5 +244,14 @@ export default function SignInCard() {
         </Typography>
       </Box>
     </Card>
+
+    {/* Toast Notification */}
+    <Toast
+      open={toast.open}
+      message={toast.message}
+      severity={toast.severity}
+      onClose={hideToast}
+    />
+  </>
   );
 }
