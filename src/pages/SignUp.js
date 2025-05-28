@@ -19,6 +19,7 @@ import { AuthAPI } from '../api/api';
 import { useNavigate } from 'react-router-dom';
 import Toast from '../components/Toast';
 import { useToast } from '../hooks/useToast';
+import AppAppBar from '../components/AppAppBar';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -171,6 +172,7 @@ export default function SignUp(props) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
+      <AppAppBar />
       <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">

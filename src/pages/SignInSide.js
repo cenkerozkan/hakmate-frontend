@@ -5,11 +5,13 @@ import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import SignInCard from '../components/SignInCard';
 import Content from '../components/Content';
+import AppAppBar from '../components/AppAppBar';
 
 export default function SignInSide(props) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
+      <AppAppBar />
       <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
       <Stack
         direction="column"
