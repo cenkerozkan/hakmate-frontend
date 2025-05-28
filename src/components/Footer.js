@@ -55,7 +55,7 @@ export default function Footer() {
             minWidth: { xs: '100%', sm: '60%' },
           }}
         >
-          <Box sx={{ width: { xs: '100%', sm: '60%' }, mx: 'auto' }}>
+          <Box sx={{ width: { xs: '80%' }, mx: 'auto' }}>
             <SitemarkIcon />
             <Typography variant="body2" gutterBottom sx={{ fontWeight: 600, mt: 2 }}>
               E-posta servisimize abone ol.
@@ -95,49 +95,6 @@ export default function Footer() {
               </Button>
             </Stack>
           </Box>
-        </Box>
-
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1,
-            mt: { xs: 4, sm: 0 },
-            textAlign: { xs: 'center', sm: 'left' },
-          }}
-        >
-          <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-            HakMate
-          </Typography>
-          <Link color="text.secondary" variant="body2" href="#">
-            Hakkımızda
-          </Link>
-          <Link color="text.secondary" variant="body2" href="#">
-            İletişim
-          </Link>
-        </Box>
-
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1,
-            mt: { xs: 4, sm: 0 },
-            textAlign: { xs: 'center', sm: 'left' },
-          }}
-        >
-          <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-            Kurumsal
-          </Typography>
-          <Link color="text.secondary" variant="body2" href="#">
-            Hizmet Politikası
-          </Link>
-          <Link color="text.secondary" variant="body2" href="#">
-            KVKK
-          </Link>
-          <Link color="text.secondary" variant="body2" href="#">
-            İletişim
-          </Link>
         </Box>
       </Box>
 

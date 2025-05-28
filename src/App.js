@@ -4,6 +4,7 @@ import SignInPage from './pages/SignInSide';
 import SignUpPage from './pages/SignUp';
 import MainPage from './pages/MainPage';
 import LawOfficesPage from './pages/LawOfficesPage';
+import ContactPage from './pages/ContactPage';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/law-offices" element={<LawOfficesPage />} />
+        <Route path="/contact" element={<ContactPage />} />
       </Routes>
     </Router>
   );

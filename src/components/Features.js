@@ -175,7 +175,6 @@ export default function Features() {
               display: { xs: 'none', sm: 'flex' },
               flexDirection: 'column',
               gap: 2,
-              height: '100%',
             }}
           >
             {items.map(({ icon, title, description }, index) => (
@@ -247,8 +246,8 @@ export default function Features() {
             <Box
               sx={(theme) => ({
                 m: 'auto',
-                width: '100%',
-                aspectRatio: 1/1,
+                height: '100%',
+                aspectRatio: 1920/1080,
                 backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
                 backgroundPositionY: 'center',

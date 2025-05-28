@@ -38,6 +38,7 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 export default function AppAppBar() {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -66,6 +67,9 @@ export default function AppAppBar() {
       })
       .catch(() => {
         setUser(null);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, []);
 
@@ -128,6 +132,11 @@ export default function AppAppBar() {
               <Button onClick={() => scrollToSection('highlights')} variant="text" color="info" size="small">
                 Öne Çıkanlar
               </Button>
+              <Link to="/contact" style={{ textDecoration: 'none' }}>
+                <Button variant="text" color="info" size="small">
+                  İletişim
+                </Button>
+              </Link>
               <Button onClick={() => scrollToSection('faq')} variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
                 SSS
               </Button>
@@ -135,28 +144,30 @@ export default function AppAppBar() {
           </Box>
 
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1, alignItems: 'center' }}>
-            {user ? (
-              <>
-                <Typography variant="body2" color="text.primary" noWrap>
-                  Hoş geldiniz, {user.name} {user.surname}
-                </Typography>
-                <Button color="primary" variant="outlined" size="small" onClick={handleSignOut}>
-                  Çıkış Yap
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link to="/sign-in">
-                  <Button color="primary" variant="text" size="small">
-                    Giriş Yap
+            {!loading && (
+              user ? (
+                <>
+                  <Typography variant="body2" color="text.primary" noWrap>
+                    Hoş geldiniz, {user.name} {user.surname}
+                  </Typography>
+                  <Button color="primary" variant="outlined" size="small" onClick={handleSignOut}>
+                    Çıkış Yap
                   </Button>
-                </Link>
-                <Link to="/sign-up">
-                  <Button color="primary" variant="contained" size="small">
-                    Kayıt Ol
-                  </Button>
-                </Link>
-              </>
+                </>
+              ) : (
+                <>
+                  <Link to="/sign-in">
+                    <Button color="primary" variant="text" size="small">
+                      Giriş Yap
+                    </Button>
+                  </Link>
+                  <Link to="/sign-up">
+                    <Button color="primary" variant="contained" size="small">
+                      Kayıt Ol
+                    </Button>
+                  </Link>
+                </>
+              )
             )}
             <ColorModeIconDropdown />
           </Box>
@@ -208,40 +219,45 @@ export default function AppAppBar() {
                 <MenuItem sx={{ fontSize: '1rem' }} onClick={() => { scrollToSection('highlights'); setOpen(false); }}>
                   Öne Çıkanlar
                 </MenuItem>
+                <MenuItem sx={{ fontSize: '1rem' }} onClick={() => { navigate('/contact'); setOpen(false); }}>
+                  İletişim
+                </MenuItem>
                 <MenuItem sx={{ fontSize: '1rem' }} onClick={() => { scrollToSection('faq'); setOpen(false); }}>
                   SSS
                 </MenuItem>
                 <Divider sx={{ my: 3 }} />
-                {user ? (
-                  <>
-                    <MenuItem>
-                      <Typography variant="body2" sx={{ mx: 'auto' }}>
-                        Hoş geldiniz, {user.name}
-                      </Typography>
-                    </MenuItem>
-                    <MenuItem>
-                      <Button fullWidth onClick={handleSignOut}>
-                        Çıkış Yap
-                      </Button>
-                    </MenuItem>
-                  </>
-                ) : (
-                  <>
-                    <MenuItem>
-                      <Link to="/sign-up" style={{ width: '100%' }}>
-                        <Button color="primary" variant="contained" fullWidth>
-                          Kayıt Ol
+                {!loading && (
+                  user ? (
+                    <>
+                      <MenuItem>
+                        <Typography variant="body2" sx={{ mx: 'auto' }}>
+                          Hoş geldiniz, {user.name}
+                        </Typography>
+                      </MenuItem>
+                      <MenuItem>
+                        <Button fullWidth onClick={handleSignOut}>
+                          Çıkış Yap
                         </Button>
-                      </Link>
-                    </MenuItem>
-                    <MenuItem>
-                      <Link to="/sign-in" style={{ width: '100%' }}>
-                        <Button color="primary" variant="outlined" fullWidth>
-                          Giriş Yap
-                        </Button>
-                      </Link>
-                    </MenuItem>
-                  </>
+                      </MenuItem>
+                    </>
+                  ) : (
+                    <>
+                      <MenuItem>
+                        <Link to="/sign-up" style={{ width: '100%' }}>
+                          <Button color="primary" variant="contained" fullWidth>
+                            Kayıt Ol
+                          </Button>
+                        </Link>
+                      </MenuItem>
+                      <MenuItem>
+                        <Link to="/sign-in" style={{ width: '100%' }}>
+                          <Button color="primary" variant="outlined" fullWidth>
+                            Giriş Yap
+                          </Button>
+                        </Link>
+                      </MenuItem>
+                    </>
+                  )
                 )}
               </Box>
             </Drawer>
