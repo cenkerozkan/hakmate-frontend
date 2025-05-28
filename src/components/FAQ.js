@@ -35,75 +35,110 @@ export default function FAQ() {
         variant="h4"
         sx={{
           color: 'text.primary',
-          width: { xs: '100%', sm: '100%', md: '60%' },
-          textAlign: 'center',
+          width: { sm: '100%', md: '60%' },
+          textAlign: { sm: 'left', md: 'center' },
         }}
       >
         Sıkça Sorulan Sorular
       </Typography>
-
       <Box sx={{ width: '100%' }}>
-        {[
-          {
-            key: 'panel1',
-            question: 'Destek ekibinize nasıl ulaşabilirim?',
-            answer: (
-              <>
-                Destek ekibimize&nbsp;
-                <Link href="mailto:destek@hakmate.com">destek@hakmate.com</Link>
-                &nbsp;adresinden e-posta atabilir veya 0850 xxx xx xx numaralı hattımızı
-                arayabilirsiniz. Size en kısa sürede yardımcı olmaktan memnuniyet duyarız.
-              </>
-            ),
-          },
-          {
-            key: 'panel3',
-            question: 'Hakmate’i benzerlerinden ayıran nedir?',
-            answer:
-              'Hakmate, hukuk alanına özel geliştirilen yapay zekâ algoritmaları, güçlü içtihat veritabanı ve kullanıcı dostu arayüzüyle öne çıkar. Sürekli güncellenen içeriğiyle ihtiyaçlarınıza dinamik şekilde uyum sağlar.',
-          },
-          {
-            key: 'panel4',
-            question: 'Doğru cevap garantisi sunuyor musunuz?',
-            answer:
-              'Cevaplarımız hukuk uzmanları tarafından denetlenir ve en yüksek doğrulukta bilgi sunmayı hedefler. Ancak, verilen cevapların kesinliği konusunda garanti veremeyiz. Hukuki bir işlem öncesinde bir uzmana danışmanızı öneririz.',
-          },
-        ].map(({ key, question, answer }) => (
-          <Accordion
-            key={key}
-            expanded={expanded.includes(key)}
-            onChange={handleChange(key)}
-            sx={{
-              mb: 1,
-              '& .MuiAccordionSummary-root': {
-                flexWrap: 'wrap',
-                minHeight: { xs: 56, sm: 'auto' },
-              },
-            }}
+        <Accordion
+          expanded={expanded.includes('panel1')}
+          onChange={handleChange('panel1')}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1d-content"
+            id="panel1d-header"
           >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls={`${key}d-content`}
-              id={`${key}d-header`}
+            <Typography component="span" variant="subtitle2">
+              Destek ekibinize nasıl ulaşabilirim?
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography
+              variant="body2"
+              gutterBottom
+              sx={{ maxWidth: { sm: '100%', md: '70%' } }}
             >
-              <Typography component="span" variant="subtitle2">
-                {question}
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography
-                variant="body2"
-                gutterBottom
-                sx={{
-                  maxWidth: { xs: '100%', md: '70%' },
-                  textAlign: 'left',
-                }}
-              >
-                {answer}
-              </Typography>
-            </AccordionDetails>
-          </Accordion>
-        ))}
+             Destek ekibimize &nbsp;<Link href="mailto:destek@hakmate.com">destek@hakmate.com</Link> &nbsp;
+              adresinden e-posta atabilir veya 0850 xxx xx xx numaralı hattımızı arayabilirsiniz. 
+              Size en kısa sürede yardımcı olmaktan memnuniyet duyarız.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion
+          expanded={expanded.includes('panel2')}
+          onChange={handleChange('panel2')}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel2d-content"
+            id="panel2d-header"
+          >
+            {/* <Typography component="span" variant="subtitle2">
+              Ürünü iade edebilir miyim?
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography
+              variant="body2"
+              gutterBottom
+              sx={{ maxWidth: { sm: '100%', md: '70%' } }}
+            >
+              Elbette. Memnun kalmazsanız, 1 gün içinde koşulsuz iade veya paket 
+              değişikliği yapabilirsiniz. Müşteri memnuniyeti önceliğimizdir.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion
+          expanded={expanded.includes('panel3')}
+          onChange={handleChange('panel3')}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel3d-content"
+            id="panel3d-header"
+          > */}
+            <Typography component="span" variant="subtitle2">
+              Hakmate’i benzerlerinden ayıran nedir?
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography
+              variant="body2"
+              gutterBottom
+              sx={{ maxWidth: { sm: '100%', md: '70%' } }}
+            >
+              Hakmate, hukuk alanına özel geliştirilen yapay zekâ algoritmaları, 
+              güçlü içtihat veritabanı ve kullanıcı dostu arayüzüyle öne çıkar. 
+              Sürekli güncellenen içeriğiyle ihtiyaçlarınıza dinamik şekilde uyum sağlar.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion
+          expanded={expanded.includes('panel4')}
+          onChange={handleChange('panel4')}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel4d-content"
+            id="panel4d-header"
+          >
+            <Typography component="span" variant="subtitle2">
+              Doğru cevap garantisi sunuyor musunuz?
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography
+              variant="body2"
+              gutterBottom
+              sx={{ maxWidth: { sm: '100%', md: '70%' } }}
+            >
+              Cevaplarımız hukuk uzmanları tarafından denetlenir ve en yüksek doğrulukta bilgi sunmayı hedefler. Ancak, verilen cevapların kesinliği konusunda garanti veremeyiz. Hukuki bir işlem öncesinde bir uzmana danışmanızı öneririz.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
       </Box>
     </Container>
   );

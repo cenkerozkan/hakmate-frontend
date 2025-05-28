@@ -73,8 +73,8 @@ export default function Highlights() {
       >
         <Box
           sx={{
-            width: { xs: '100%', sm: '100%', md: '60%' },
-            textAlign: { xs: 'center', sm: 'left', md: 'center' },
+            width: { sm: '100%', md: '60%' },
+            textAlign: { sm: 'left', md: 'center' },
           }}
         >
           <Typography component="h2" variant="h4" gutterBottom>
@@ -86,31 +86,32 @@ export default function Highlights() {
             özellikler. Güvenilir destek ve detaylara verilen önem ile fark yaratır.
           </Typography>
         </Box>
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           {items.map((item, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
+              <Stack
+                direction="column"
+                component={Card}
+                spacing={1}
+                useFlexGap
                 sx={{
+                  color: 'inherit',
                   p: 3,
                   height: '100%',
                   borderColor: 'hsla(220, 25%, 25%, 0.3)',
                   backgroundColor: 'grey.800',
-                  color: 'inherit',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
                 }}
               >
-                <Stack direction="column" spacing={1}>
-                  <Box sx={{ opacity: '50%' }}>{item.icon}</Box>
+                <Box sx={{ opacity: '50%' }}>{item.icon}</Box>
+                <div>
                   <Typography gutterBottom sx={{ fontWeight: 'medium' }}>
                     {item.title}
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'grey.400' }}>
                     {item.description}
                   </Typography>
-                </Stack>
-              </Card>
+                </div>
+              </Stack>
             </Grid>
           ))}
         </Grid>
