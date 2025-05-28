@@ -13,6 +13,8 @@ function ForgotPassword({ open, handleClose }) {
     <Dialog
       open={open}
       onClose={handleClose}
+      fullWidth
+      maxWidth="xs"
       slotProps={{
         paper: {
           component: 'form',
@@ -20,15 +22,28 @@ function ForgotPassword({ open, handleClose }) {
             event.preventDefault();
             handleClose();
           },
-          sx: { backgroundImage: 'none' },
+          sx: {
+            backgroundImage: 'none',
+            px: { xs: 2, sm: 3 },
+            width: { xs: '90%', sm: 'auto' },
+            m: { xs: 1, sm: 'auto' },
+          },
         },
       }}
     >
-      <DialogTitle>Şifrenizi sıfırlayın</DialogTitle>
+      <DialogTitle sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
+        Şifrenizi sıfırlayın
+      </DialogTitle>
       <DialogContent
-        sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          width: '100%',
+          px: { xs: 0, sm: 1 },
+        }}
       >
-        <DialogContentText>
+        <DialogContentText sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}>
           Hesabınızın e-posta adresini girin, size bir şifre sıfırlama maili gönderelim.
         </DialogContentText>
         <OutlinedInput
@@ -37,10 +52,10 @@ function ForgotPassword({ open, handleClose }) {
           margin="dense"
           id="email"
           name="email"
-          label="E-posta adresi"
-          placeholder="E-post adresi"
+          placeholder="E-posta adresi"
           type="email"
           fullWidth
+          sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}
         />
       </DialogContent>
       <DialogActions sx={{ pb: 3, px: 3 }}>

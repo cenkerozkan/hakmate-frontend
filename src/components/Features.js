@@ -60,9 +60,7 @@ const Chip = styled(MuiChip)(({ theme }) => ({
 }));
 
 function MobileLayout({ selectedItemIndex, handleItemClick, selectedFeature }) {
-  if (!items[selectedItemIndex]) {
-    return null;
-  }
+  if (!items[selectedItemIndex]) return null;
 
   return (
     <Box
@@ -72,7 +70,13 @@ function MobileLayout({ selectedItemIndex, handleItemClick, selectedFeature }) {
         gap: 2,
       }}
     >
-      <Box sx={{ display: 'flex', gap: 2, overflow: 'auto' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 1,
+        }}
+      >
         {items.map(({ title }, index) => (
           <Chip
             size="medium"
@@ -83,35 +87,43 @@ function MobileLayout({ selectedItemIndex, handleItemClick, selectedFeature }) {
           />
         ))}
       </Box>
-      <Card variant="outlined">
+      <Card variant="outlined" sx={{ borderRadius: 2 }}>
         <Box
           sx={(theme) => ({
             mb: 2,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            minHeight: 280,
+            minHeight: 200,
+            borderTopLeftRadius: 8,
+            borderTopRightRadius: 8,
             backgroundImage: 'var(--items-imageLight)',
             ...theme.applyStyles('dark', {
               backgroundImage: 'var(--items-imageDark)',
             }),
           })}
-          style={
-            items[selectedItemIndex]
-              ? {
-                  '--items-imageLight': items[selectedItemIndex].imageLight,
-                  '--items-imageDark': items[selectedItemIndex].imageDark,
-                }
-              : {}
-          }
+          style={{
+            '--items-imageLight': items[selectedItemIndex].imageLight,
+            '--items-imageDark': items[selectedItemIndex].imageDark,
+          }}
         />
         <Box sx={{ px: 2, pb: 2 }}>
           <Typography
             gutterBottom
-            sx={{ color: 'text.primary', fontWeight: 'medium' }}
+            sx={{
+              fontSize: { xs: '1.1rem', sm: '1.25rem' },
+              fontWeight: 'medium',
+              color: 'text.primary',
+            }}
           >
             {selectedFeature.title}
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5 }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+              fontSize: { xs: '0.9rem', sm: '1rem' },
+            }}
+          >
             {selectedFeature.description}
           </Typography>
         </Box>
@@ -145,18 +157,22 @@ export default function Features() {
 
   return (
     <Container id="features" sx={{ py: { xs: 8, sm: 16 } }}>
-      <Box sx={{ width: { sm: '100%', md: '60%' } }}>
+      <Box sx={{ width: { xs: '100%', sm: '100%', md: '60%' } }}>
         <Typography
           component="h2"
           variant="h4"
           gutterBottom
-          sx={{ color: 'text.primary' }}
+          sx={{ color: 'text.primary', textAlign: { xs: 'center', md: 'left' } }}
         >
           Ürünümüzün Özellikleri
         </Typography>
         <Typography
           variant="body1"
-          sx={{ color: 'text.secondary', mb: { xs: 2, sm: 4 } }}
+          sx={{
+            color: 'text.secondary',
+            mb: { xs: 4, sm: 6 },
+            textAlign: { xs: 'center', md: 'left' },
+          }}
         >
           Yapay zeka ile belirtilen durumları örnekler ile açıklama, çözüm önerileri önerme, 
           bilinmeyen terimleri açıklama, hepsi tek bir yerde HakMate.
@@ -186,11 +202,11 @@ export default function Features() {
                 sx={[
                   (theme) => ({
                     p: 2,
-                    height: '100%',
                     width: '100%',
                     '&:hover': {
                       backgroundColor: (theme.vars || theme).palette.action.hover,
                     },
+                    textAlign: 'left',
                   }),
                   selectedItemIndex === index && {
                     backgroundColor: 'action.selected',
@@ -200,14 +216,11 @@ export default function Features() {
                 <Box
                   sx={[
                     {
-                      width: '100%',
                       display: 'flex',
                       flexDirection: 'column',
-                      alignItems: 'left',
                       gap: 1,
-                      textAlign: 'left',
-                      textTransform: 'none',
                       color: 'text.secondary',
+                      textTransform: 'none',
                     },
                     selectedItemIndex === index && {
                       color: 'text.primary',
@@ -215,19 +228,20 @@ export default function Features() {
                   ]}
                 >
                   {icon}
-
                   <Typography variant="h6">{title}</Typography>
                   <Typography variant="body2">{description}</Typography>
                 </Box>
               </Box>
             ))}
           </Box>
+
           <MobileLayout
             selectedItemIndex={selectedItemIndex}
             handleItemClick={handleItemClick}
             selectedFeature={selectedFeature}
           />
         </div>
+
         <Box
           sx={{
             display: { xs: 'none', sm: 'flex' },
@@ -248,7 +262,7 @@ export default function Features() {
               sx={(theme) => ({
                 m: 'auto',
                 width: '100%',
-                aspectRatio: 1/1,
+                aspectRatio: 1 / 1,
                 backgroundSize: 'contain',
                 backgroundRepeat: 'no-repeat',
                 backgroundPositionY: 'center',
@@ -257,14 +271,10 @@ export default function Features() {
                   backgroundImage: 'var(--items-imageDark)',
                 }),
               })}
-              style={
-                items[selectedItemIndex]
-                  ? {
-                      '--items-imageLight': items[selectedItemIndex].imageLight,
-                      '--items-imageDark': items[selectedItemIndex].imageDark,
-                    }
-                  : {}
-              }
+              style={{
+                '--items-imageLight': items[selectedItemIndex].imageLight,
+                '--items-imageDark': items[selectedItemIndex].imageDark,
+              }}
             />
           </Card>
         </Box>

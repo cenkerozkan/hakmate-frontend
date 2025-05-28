@@ -25,13 +25,14 @@ const Card = styled(MuiCard)(({ theme }) => ({
   flexDirection: 'column',
   alignSelf: 'center',
   width: '100%',
-  padding: theme.spacing(4),
+  padding: theme.spacing(3),
   gap: theme.spacing(2),
   margin: 'auto',
   boxShadow:
     'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
   [theme.breakpoints.up('sm')]: {
     width: '450px',
+    padding: theme.spacing(4),
   },
   ...theme.applyStyles('dark', {
     boxShadow:
@@ -69,12 +70,9 @@ export default function SignUp(props) {
   React.useEffect(() => {
     AuthAPI.getMe()
       .then(() => {
-        // Kullanıcı giriş yapmış, ana sayfaya yönlendir
         navigate('/');
       })
-      .catch(() => {
-        // Giriş yapılmamış, sayfa normal açılır
-      });
+      .catch(() => {});
   }, [navigate]);
 
   const [emailError, setEmailError] = React.useState(false);
@@ -151,11 +149,8 @@ export default function SignUp(props) {
 
     try {
       const response = await AuthAPI.signUp(userData);
-      
       if (response.data && response.data.success) {
         showSuccess('Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...');
-        
-        // Kısa bir gecikme ile giriş sayfasına yönlendir
         setTimeout(() => {
           navigate('/sign-in');
         }, 2000);
@@ -164,11 +159,9 @@ export default function SignUp(props) {
       }
     } catch (error) {
       console.error('Kayıt hatası:', error);
-      
       const errorMessage = error.response?.data?.message || 
                           error.message || 
                           'Kayıt işlemi sırasında bir hata oluştu';
-      
       showError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -187,7 +180,7 @@ export default function SignUp(props) {
           <Typography
             component="h1"
             variant="h4"
-            sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+            sx={{ width: '100%', fontSize: 'clamp(1.75rem, 9vw, 2.15rem)' }}
           >
             Kayıt Ol
           </Typography>
@@ -255,7 +248,11 @@ export default function SignUp(props) {
             </FormControl>
             <FormControlLabel
               control={<Checkbox value="allowExtraEmails" color="primary" />}
-              label="Kişisel verilerinizin anonim olarak analiz amaçlı kullanılmasını kabul ediyorsunuz."
+              label={
+                <Typography variant="body2">
+                  Kişisel verilerinizin anonim olarak analiz amaçlı kullanılmasını kabul ediyorsunuz.
+                </Typography>
+              }
               disabled={isLoading}
             />
             <Button 
@@ -269,7 +266,6 @@ export default function SignUp(props) {
           </Box>
         </Card>
 
-        {/* Toast Notification */}
         <Toast
           open={toast.open}
           message={toast.message}

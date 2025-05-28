@@ -101,7 +101,10 @@ export default function Pricing() {
       >
         {tiers.map((tier) => (
           <Grid
-            size={{ xs: 12, sm: tier.title === 'Enterprise' ? 12 : 6, md: 4 }}
+            item
+            xs={12}
+            sm={tier.title === 'Kurumsal' ? 12 : 6}
+            md={4}
             key={tier.title}
           >
             <Card
@@ -112,7 +115,7 @@ export default function Pricing() {
                   flexDirection: 'column',
                   gap: 4,
                 },
-                tier.title === 'Professional' &&
+                tier.title === 'Profesyonel' &&
                   ((theme) => ({
                     border: 'none',
                     background:
@@ -128,36 +131,28 @@ export default function Pricing() {
             >
               <CardContent>
                 <Box
-                  sx={[
-                    {
-                      mb: 1,
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      gap: 2,
-                    },
-                    tier.title === 'Professional'
-                      ? { color: 'grey.100' }
-                      : { color: '' },
-                  ]}
+                  sx={{
+                    mb: 1,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: 2,
+                    color: tier.title === 'Profesyonel' ? 'grey.100' : 'inherit'
+                  }}
                 >
                   <Typography component="h3" variant="h6">
                     {tier.title}
                   </Typography>
-                  {tier.title === 'Professional' && (
+                  {tier.title === 'Profesyonel' && (
                     <Chip icon={<AutoAwesomeIcon />} label={tier.subheader} />
                   )}
                 </Box>
                 <Box
-                  sx={[
-                    {
-                      display: 'flex',
-                      alignItems: 'baseline',
-                    },
-                    tier.title === 'Professional'
-                      ? { color: 'grey.50' }
-                      : { color: null },
-                  ]}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'baseline',
+                    color: tier.title === 'Profesyonel' ? 'grey.50' : 'inherit'
+                  }}
                 >
                   <Typography component="h3" variant="h2">
                     ₺{tier.price}
@@ -173,23 +168,15 @@ export default function Pricing() {
                     sx={{ py: 1, display: 'flex', gap: 1.5, alignItems: 'center' }}
                   >
                     <CheckCircleRoundedIcon
-                      sx={[
-                        {
-                          width: 20,
-                        },
-                        tier.title === 'Professional'
-                          ? { color: 'primary.light' }
-                          : { color: 'primary.main' },
-                      ]}
+                      sx={{
+                        width: 20,
+                        color: tier.title === 'Profesyonel' ? 'primary.light' : 'primary.main'
+                      }}
                     />
                     <Typography
                       variant="subtitle2"
-                      component={'span'}
-                      sx={[
-                        tier.title === 'Professional'
-                          ? { color: 'grey.50' }
-                          : { color: null },
-                      ]}
+                      component='span'
+                      sx={{ color: tier.title === 'Profesyonel' ? 'grey.50' : 'inherit' }}
                     >
                       {line}
                     </Typography>

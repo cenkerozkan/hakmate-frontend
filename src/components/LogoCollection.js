@@ -22,34 +22,33 @@ const darkLogos = [
   'https://assets-global.website-files.com/61ed56ae9da9fd7e0ef0a967/655f5ca4e548b0deb1041c33_Ankara-black.svg',
 ];
 
-const logoStyle = {
-  width: '100px',
-  height: '80px',
-  margin: '0 32px',
-  opacity: 0.7,
-};
-
 export default function LogoCollection() {
   const theme = useTheme();
   const logos = theme.palette.mode === 'light' ? darkLogos : whiteLogos;
 
   return (
-    <Box id="logoCollection" sx={{ py: 4 }}>
+    <Box id="logoCollection" sx={{ py: { xs: 4, sm: 6 } }}>
       <Typography
         component="p"
         variant="subtitle2"
         align="center"
-        sx={{ color: 'text.secondary' }}
+        sx={{ color: 'text.secondary', mb: 2 }}
       >
         En iyi şirketler tarafından güveniliyor.
       </Typography>
-      <Grid container sx={{ justifyContent: 'center', mt: 0.5, opacity: 0.6 }}>
+      <Grid container spacing={2} justifyContent="center" alignItems="center">
         {logos.map((logo, index) => (
-          <Grid key={index}>
-            <img
+          <Grid item xs={6} sm={4} md={2} key={index} sx={{ textAlign: 'center' }}>
+            <Box
+              component="img"
               src={logo}
               alt={`Fake company number ${index + 1}`}
-              style={logoStyle}
+              sx={{
+                width: { xs: '80px', sm: '90px', md: '100px' },
+                height: 'auto',
+                opacity: 0.7,
+                mx: 'auto',
+              }}
             />
           </Grid>
         ))}

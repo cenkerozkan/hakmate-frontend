@@ -96,8 +96,8 @@ export default function Testimonials() {
     >
       <Box
         sx={{
-          width: { sm: '100%', md: '60%' },
-          textAlign: { sm: 'left', md: 'center' },
+          width: { xs: '100%', sm: '100%', md: '60%' },
+          textAlign: { xs: 'center', sm: 'left', md: 'center' },
         }}
       >
         <Typography
@@ -114,7 +114,7 @@ export default function Testimonials() {
       </Box>
       <Grid container spacing={2}>
         {userTestimonials.map((testimonial, index) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index} sx={{ display: 'flex' }}>
+          <Grid item xs={12} sm={6} md={4} key={index} sx={{ display: 'flex' }}>
             <Card
               variant="outlined"
               sx={{

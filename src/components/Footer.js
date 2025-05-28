@@ -35,7 +35,7 @@ export default function Footer() {
         alignItems: 'center',
         gap: { xs: 4, sm: 8 },
         py: { xs: 8, sm: 10 },
-        textAlign: { sm: 'center', md: 'left' },
+        textAlign: { xs: 'center', md: 'left' },
       }}
     >
       <Box
@@ -43,6 +43,7 @@ export default function Footer() {
           display: 'flex',
           flexDirection: { xs: 'column', sm: 'row' },
           width: '100%',
+          gap: { xs: 6, sm: 0 },
           justifyContent: 'space-between',
         }}
       >
@@ -54,7 +55,7 @@ export default function Footer() {
             minWidth: { xs: '100%', sm: '60%' },
           }}
         >
-          <Box sx={{ width: { xs: '100%', sm: '60%' } }}>
+          <Box sx={{ width: { xs: '100%', sm: '60%' }, mx: 'auto' }}>
             <SitemarkIcon />
             <Typography variant="body2" gutterBottom sx={{ fontWeight: 600, mt: 2 }}>
               E-posta servisimize abone ol.
@@ -63,7 +64,12 @@ export default function Footer() {
               Haftalık güncellemler için abone ol!
             </Typography>
             <InputLabel htmlFor="email-newsletter">Email</InputLabel>
-            <Stack direction="row" spacing={1} useFlexGap>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={1}
+              useFlexGap
+              sx={{ width: '100%', alignItems: { xs: 'stretch', sm: 'flex-end' } }}
+            >
               <TextField
                 id="email-newsletter"
                 hiddenLabel
@@ -75,10 +81,9 @@ export default function Footer() {
                 slotProps={{
                   htmlInput: {
                     autoComplete: 'off',
-                    'aria-label': 'E-posta adresiniiz giriniz.',
+                    'aria-label': 'E-posta adresinizi giriniz.',
                   },
                 }}
-                sx={{ width: '250px' }}
               />
               <Button
                 variant="contained"
@@ -91,11 +96,14 @@ export default function Footer() {
             </Stack>
           </Box>
         </Box>
+
         <Box
           sx={{
-            display: { xs: 'none', sm: 'flex' },
+            display: 'flex',
             flexDirection: 'column',
             gap: 1,
+            mt: { xs: 4, sm: 0 },
+            textAlign: { xs: 'center', sm: 'left' },
           }}
         >
           <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
@@ -108,11 +116,14 @@ export default function Footer() {
             İletişim
           </Link>
         </Box>
+
         <Box
           sx={{
-            display: { xs: 'none', sm: 'flex' },
+            display: 'flex',
             flexDirection: 'column',
             gap: 1,
+            mt: { xs: 4, sm: 0 },
+            textAlign: { xs: 'center', sm: 'left' },
           }}
         >
           <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
@@ -129,17 +140,22 @@ export default function Footer() {
           </Link>
         </Box>
       </Box>
+
       <Box
         sx={{
           display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
           justifyContent: 'space-between',
+          alignItems: 'center',
           pt: { xs: 4, sm: 8 },
           width: '100%',
           borderTop: '1px solid',
           borderColor: 'divider',
+          gap: 2,
+          textAlign: { xs: 'center', sm: 'left' },
         }}
       >
-        <div>
+        <Box>
           <Link color="text.secondary" variant="body2" href="#">
             Hizmet Politikası
           </Link>
@@ -150,19 +166,20 @@ export default function Footer() {
             KVKK
           </Link>
           <Copyright />
-        </div>
+        </Box>
+
         <Stack
           direction="row"
           spacing={1}
           useFlexGap
-          sx={{ justifyContent: 'left', color: 'text.secondary' }}
+          justifyContent="center"
+          sx={{ color: 'text.secondary' }}
         >
           <IconButton
             color="inherit"
             size="small"
             href="#"
             aria-label="GitHub"
-            sx={{ alignSelf: 'center' }}
           >
             <GitHubIcon />
           </IconButton>
@@ -171,7 +188,6 @@ export default function Footer() {
             size="small"
             href="#"
             aria-label="X"
-            sx={{ alignSelf: 'center' }}
           >
             <TwitterIcon />
           </IconButton>
@@ -180,7 +196,6 @@ export default function Footer() {
             size="small"
             href="#"
             aria-label="LinkedIn"
-            sx={{ alignSelf: 'center' }}
           >
             <LinkedInIcon />
           </IconButton>

@@ -42,12 +42,9 @@ export default function SignInCard() {
   React.useEffect(() => {
     AuthAPI.getMe()
       .then(() => {
-        // Kullanıcı giriş yapmış, ana sayfaya yönlendir
         navigate('/');
       })
-      .catch(() => {
-        // Giriş yapılmamış, sayfa normal açılır
-      });
+      .catch(() => {});
   }, [navigate]);
 
   const [emailError, setEmailError] = React.useState(false);
@@ -79,24 +76,17 @@ export default function SignInCard() {
       const email = formData.get('email');
       const password = formData.get('password');
 
-      // AuthAPI servisini kullan
       const response = await AuthAPI.signIn({
         email,
         password
       });
 
-      // Response yapısı: { success: true, message: "...", data: { user, session } }
       if (response.data && response.data.success && response.data.data) {
         const { session } = response.data.data;
         
         if (session && session.access_token) {
-          // Token'ı sakla
           sessionStorage.setItem('access_token', session.access_token);
-          
-          // Başarılı giriş mesajı
           showSuccess('Giriş başarılı! Yönlendiriliyorsunuz...');
-          
-          // Kısa bir gecikme ile yönlendir
           setTimeout(() => {
             navigate('/');
           }, 1500);
@@ -110,12 +100,9 @@ export default function SignInCard() {
       }
     } catch (error) {
       console.error('Giriş hatası:', error);
-      
-      // Hata mesajını kullanıcıya göster
       const errorMessage = error.response?.data?.message || 
                           error.message || 
                           'Giriş işlemi sırasında bir hata oluştu';
-      
       showError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -151,107 +138,117 @@ export default function SignInCard() {
 
   return (
     <>
-    <Card variant="outlined">
-      <Link href="/">
-        <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-          <SitemarkIcon style={{ pointerEvents: 'auto', cursor: 'pointer' }} />
-        </Box>
-      </Link>
-      <Typography
-        component="h1"
-        variant="h4"
-        sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
-      >
-        Giriş Yap
-      </Typography>
       <Box
-        component="form"
-        onSubmit={handleSubmit}
-        noValidate
-        sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          minHeight: '100vh',
+          px: { xs: 2, sm: 0 },
+        }}
       >
-        <FormControl>
-          <FormLabel htmlFor="email">E-posta</FormLabel>
-          <TextField
-            error={emailError}
-            helperText={emailErrorMessage}
-            id="email"
-            type="email"
-            name="email"
-            placeholder="sizin@epostadresiniz.com"
-            autoComplete="email"
-            autoFocus
-            required
-            fullWidth
-            variant="outlined"
-            color={emailError ? 'error' : 'primary'}
-            disabled={isLoading}
-          />
-        </FormControl>
-        <FormControl>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <FormLabel htmlFor="password">Şifre</FormLabel>
-            <Link
-              component="button"
-              type="button"
-              onClick={handleClickOpen}
-              variant="body2"
-              sx={{ alignSelf: 'baseline' }}
+        <Card variant="outlined">
+          <Link href="/">
+            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+              <SitemarkIcon style={{ pointerEvents: 'auto', cursor: 'pointer' }} />
+            </Box>
+          </Link>
+          <Typography
+            component="h1"
+            variant="h4"
+            sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+          >
+            Giriş Yap
+          </Typography>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
+          >
+            <FormControl>
+              <FormLabel htmlFor="email">E-posta</FormLabel>
+              <TextField
+                error={emailError}
+                helperText={emailErrorMessage}
+                id="email"
+                type="email"
+                name="email"
+                placeholder="sizin@epostadresiniz.com"
+                autoComplete="email"
+                autoFocus
+                required
+                fullWidth
+                variant="outlined"
+                color={emailError ? 'error' : 'primary'}
+                disabled={isLoading}
+              />
+            </FormControl>
+            <FormControl>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <FormLabel htmlFor="password">Şifre</FormLabel>
+                <Link
+                  component="button"
+                  type="button"
+                  onClick={handleClickOpen}
+                  variant="body2"
+                  sx={{ alignSelf: 'baseline' }}
+                >
+                  Şifrenizi mi unuttunuz?
+                </Link>
+              </Box>
+              <TextField
+                error={passwordError}
+                helperText={passwordErrorMessage}
+                name="password"
+                placeholder="••••••"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                required
+                fullWidth
+                variant="outlined"
+                color={passwordError ? 'error' : 'primary'}
+                disabled={isLoading}
+              />
+            </FormControl>
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Beni hatırla"
+              disabled={isLoading}
+            />
+            <ForgotPassword open={open} handleClose={handleClose} />
+            <Button 
+              type="submit" 
+              fullWidth 
+              variant="contained"
+              disabled={isLoading}
             >
-              Şifrenizi mi unuttunuz?
-            </Link>
+              {isLoading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+            </Button>
+            <Typography sx={{ textAlign: 'center' }}>
+              Hesabınız yok mu?{' '}
+              <span>
+                <Link
+                  href="/sign-up/"
+                  variant="body2"
+                  sx={{ alignSelf: 'center' }}
+                >
+                  Kayıt Ol
+                </Link>
+              </span>
+            </Typography>
           </Box>
-          <TextField
-            error={passwordError}
-            helperText={passwordErrorMessage}
-            name="password"
-            placeholder="••••••"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            required
-            fullWidth
-            variant="outlined"
-            color={passwordError ? 'error' : 'primary'}
-            disabled={isLoading}
-          />
-        </FormControl>
-        <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Beni hatırla"
-          disabled={isLoading}
-        />
-        <ForgotPassword open={open} handleClose={handleClose} />
-        <Button 
-          type="submit" 
-          fullWidth 
-          variant="contained"
-          disabled={isLoading}
-        >
-          {isLoading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
-        </Button>
-        <Typography sx={{ textAlign: 'center' }}>
-          Hesabınız yok mu?{' '}
-          <span>
-            <Link
-              href="/sign-up/"
-              variant="body2"
-              sx={{ alignSelf: 'center' }}
-            >
-              Kayıt Ol
-            </Link>
-          </span>
-        </Typography>
+        </Card>
       </Box>
-    </Card>
 
-    {/* Toast Notification */}
-    <Toast
-      open={toast.open}
-      message={toast.message}
-      severity={toast.severity}
-      onClose={hideToast}
-    />
-  </>
+      <Toast
+        open={toast.open}
+        message={toast.message}
+        severity={toast.severity}
+        onClose={hideToast}
+      />
+    </>
   );
 }
