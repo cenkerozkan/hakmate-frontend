@@ -61,8 +61,8 @@ export default function FAQ() {
               gutterBottom
               sx={{ maxWidth: { sm: '100%', md: '70%' } }}
             >
-             Destek ekibimize &nbsp;<Link href="mailto:destek@hakmate.com">destek@hakmate.com</Link> &nbsp;
-              adresinden e-posta atabilir veya 0850 xxx xx xx numaralı hattımızı arayabilirsiniz. 
+             Destek ekibimize &nbsp;<Link href="/contact">İletişim</Link> &nbsp;
+              ulaşabilir, fikirlerinizi ve şikayetlerinizi belirtebilirsiniz. 
               Size en kısa sürede yardımcı olmaktan memnuniyet duyarız.
             </Typography>
           </AccordionDetails>
