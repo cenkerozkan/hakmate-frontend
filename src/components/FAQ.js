@@ -126,6 +126,29 @@ export default function FAQ() {
             id="panel4d-header"
           >
             <Typography component="span" variant="subtitle2">
+              Hakmate’den en iyi şekilde nasıl faydalanabilirim?
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography
+              variant="body2"
+              gutterBottom
+              sx={{ maxWidth: { sm: '100%', md: '70%' } }}
+            >
+              Hakmate’den en iyi şekilde faydalanmak için, sorularınızı net ve anlaşılır bir şekilde ifade edin. Chat kısmındaki önerilen soruları ve yönergeleri takip ederek, aradığınız bilgilere daha hızlı ulaşabilirsiniz.
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion
+          expanded={expanded.includes('panel4')}
+          onChange={handleChange('panel4')}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel4d-content"
+            id="panel4d-header"
+          >
+            <Typography component="span" variant="subtitle2">
               Doğru cevap garantisi sunuyor musunuz?
             </Typography>
           </AccordionSummary>
