@@ -39,6 +39,7 @@ export default function AppAppBar() {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -59,6 +60,19 @@ export default function AppAppBar() {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  // Scroll pozisyonunu takip et
+  useEffect(() => {
+    if (!isHomePage) return;
+
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      setIsScrolled(scrollTop > 100); // 100px scroll sonrası yapışsın
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isHomePage]);
 
   useEffect(() => {
     AuthAPI.getMe()
@@ -103,13 +117,21 @@ export default function AppAppBar() {
         boxShadow: 0,
         bgcolor: 'transparent',
         backgroundImage: 'none',
-        mt: isHomePage ? { xs: '16px', md: 'calc(var(--template-frame-height, 0px) + 28px)' } : 0,
-        top: isHomePage ? 'auto' : 0,
+        mt: isHomePage ? (isScrolled ? 0 : { xs: '16px', md: 'calc(var(--template-frame-height, 0px) + 28px)' }) : 0,
+        top: 0,
         zIndex: (theme) => theme.zIndex.appBar,
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
     >
       <Container maxWidth="lg">
-        <StyledToolbar variant="dense" disableGutters>
+        <StyledToolbar 
+          variant="dense" 
+          disableGutters
+          sx={{
+            borderRadius: isHomePage && !isScrolled ? `calc(8px + 8px)` : isScrolled ? '0px' : `calc(8px + 8px)`,
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          }}
+        >
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: { xs: 1, md: 0 } }}>
             <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
               <Sitemark />
@@ -183,7 +205,7 @@ export default function AppAppBar() {
               onClose={toggleDrawer(false)}
               PaperProps={{
                 sx: {
-                  top: isHomePage ? 'var(--template-frame-height, 0px)' : 0,
+                  top: isHomePage ? (isScrolled ? 0 : 'var(--template-frame-height, 0px)') : 0,
                   maxHeight: '100vh',
                 },
               }}
