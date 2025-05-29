@@ -18,11 +18,14 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
+
 export const AuthAPI = {
   getMe: () => axiosInstance.get('/auth/me'),
   signIn: (data) => axiosInstance.post('/auth/signin', data),
   signUp: (data) => axiosInstance.post('/auth/signup', data),
   signOut: () => axiosInstance.post('/auth/signout'),
+  forgotPassword: (data) => axiosInstance.post('/auth/forgot-password', data),
+  updatePassword: (data) => axiosInstance.patch('/auth/update-password', data), 
 };
 
 export const LawOfficesAPI = {

@@ -5,6 +5,8 @@ import SignUpPage from './pages/SignUp';
 import MainPage from './pages/MainPage';
 import LawOfficesPage from './pages/LawOfficesPage';
 import ContactPage from './pages/ContactPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/law-offices" element={<LawOfficesPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+
       </Routes>
     </Router>
   );

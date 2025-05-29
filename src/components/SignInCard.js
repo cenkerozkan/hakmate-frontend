@@ -39,14 +39,6 @@ export default function SignInCard() {
   const navigate = useNavigate();
   const { toast, showSuccess, showError, hideToast } = useToast();
 
-  React.useEffect(() => {
-    AuthAPI.getMe()
-      .then(() => {
-        navigate('/');
-      })
-      .catch(() => {});
-  }, [navigate]);
-
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
@@ -54,7 +46,24 @@ export default function SignInCard() {
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
 
+  // Sadece sayfa ilk yüklendiğinde bir kez kontrol et
+  React.useEffect(() => {
+    const token = sessionStorage.getItem('access_token');
+    if (token) {
+      AuthAPI.getMe()
+        .then(() => {
+          navigate('/');
+        })
+        .catch(() => {
+          // Token geçersizse temizle
+          sessionStorage.removeItem('access_token');
+        });
+    }
+  }, []); // Boş dependency array - sadece mount'ta çalışır
+
+  // Şifre sıfırlama modalını açarken
   const handleClickOpen = () => {
+   
     setOpen(true);
   };
 
@@ -64,23 +73,23 @@ export default function SignInCard() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    
     if (!validateInputs()) {
       return;
     }
-
+  
     setIsLoading(true);
-
+  
     try {
       const formData = new FormData(event.currentTarget);
       const email = formData.get('email');
       const password = formData.get('password');
-
+  
       const response = await AuthAPI.signIn({
         email,
         password
       });
-
+  
       if (response.data && response.data.success && response.data.data) {
         const { session } = response.data.data;
         
@@ -91,11 +100,9 @@ export default function SignInCard() {
             navigate('/');
           }, 1500);
         } else {
-          console.error('Session veya access_token bulunamadı:', response.data);
           showError('Giriş başarısız: Oturum bilgileri alınamadı');
         }
       } else {
-        console.error('Beklenmeyen response yapısı:', response.data);
         showError('Giriş başarısız: Geçersiz yanıt formatı');
       }
     } catch (error) {
