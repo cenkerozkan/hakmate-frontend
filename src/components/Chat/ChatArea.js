@@ -189,14 +189,11 @@ const ChatArea = ({ selectedChat }) => {
   // Subscribe to global user state changes
   useEffect(() => {
     const unsubscribe = subscribeToUserState((newUserState) => {
-      console.log('ChatArea: User state updated:', newUserState);
       setUserState(newUserState);
     });
 
     // Initialize user state
-    ChatAPI.getCurrentUserId().then(userId => {
-      console.log('ChatArea: Initial user ID:', userId);
-    });
+    ChatAPI.getCurrentUserId();
 
     return unsubscribe;
   }, []);
@@ -214,7 +211,6 @@ const ChatArea = ({ selectedChat }) => {
       setNetworkError(false);
       
       try {
-        console.log('Loading chat history for:', selectedChat);
         const response = await ChatAPI.getChatHistory(selectedChat);
         
         if (response.data.success) {
@@ -223,7 +219,6 @@ const ChatArea = ({ selectedChat }) => {
           setError(response.data.message || "Failed to load chat history");
         }
       } catch (err) {
-        console.error('Error loading chat history:', err);
         if (err.code === 'ERR_NETWORK') {
           setNetworkError(true);
           setError("Network error: Chat service is unavailable");
@@ -239,20 +234,11 @@ const ChatArea = ({ selectedChat }) => {
   }, [selectedChat]);
 
   const handleSendMessage = async () => {
-    console.log("handleSendMessage called", { 
-      newMessage, 
-      selectedChat, 
-      userState,
-      hasUserId: !!userState.userId
-    });
-    
     if (!newMessage.trim() || !selectedChat) {
-      console.log("handleSendMessage validation failed - missing message or chat");
       return;
     }
 
     if (!userState.userId) {
-      console.log("handleSendMessage validation failed - no user ID");
       setError("User identification required. Please wait for session initialization.");
       return;
     }
@@ -271,21 +257,12 @@ const ChatArea = ({ selectedChat }) => {
     setMessages(prev => [...prev, userMessage]);
 
     try {
-      console.log("Sending message", { 
-        messageToSend, 
-        selectedChat, 
-        userId: userState.userId, 
-        webSearch 
-      });
-      
       const response = await ChatAPI.sendMessage({
         chatId: selectedChat,
         query: messageToSend,
         userId: userState.userId,
         webSearch: webSearch
       });
-      
-      console.log("sendMessage response:", response);
       
       if (response.data.success && response.data.data && response.data.data.response) {
         const assistantMessage = {
@@ -295,14 +272,10 @@ const ChatArea = ({ selectedChat }) => {
         };
         setMessages(prev => [...prev, assistantMessage]);
       } else {
-        console.error('Failed to send message:', response.data);
         setError(response.data.message || "Failed to send message");
-        // Remove the optimistic message
         setMessages(prev => prev.slice(0, -1));
       }
     } catch (err) {
-      console.error("Error sending message", err);
-      
       if (err.message.includes('Network error')) {
         setNetworkError(true);
         setError("Network error: Chat service is unavailable. Please try again later.");
@@ -312,19 +285,11 @@ const ChatArea = ({ selectedChat }) => {
         setError(err.message || "Error sending message");
       }
       
-      // Remove the optimistic message
       setMessages(prev => prev.slice(0, -1));
     }
   };
 
   const handleFAQSelect = async (faq) => {
-    console.log("handleFAQSelect called", { 
-      faq, 
-      selectedChat, 
-      userState,
-      hasUserId: !!userState.userId 
-    });
-    
     if (!selectedChat) {
       setError("Please select a chat first");
       return;
@@ -367,8 +332,6 @@ const ChatArea = ({ selectedChat }) => {
         setMessages(prev => prev.slice(0, -1));
       }
     } catch (err) {
-      console.error("Error processing FAQ", err);
-      
       if (err.message.includes('Network error')) {
         setNetworkError(true);
         setError("Network error: Chat service is unavailable");
@@ -408,18 +371,10 @@ const ChatArea = ({ selectedChat }) => {
     );
   };
 
-  // User status indicator
+  // User status indicator - sadece authenticated/anonymous göster
   const UserStatusIndicator = () => {
     if (!userState.userId) {
-      return (
-        <Chip 
-          label="Initializing..." 
-          size="small" 
-          color="warning" 
-          variant="outlined"
-          sx={{ color: '#fff', borderColor: '#fff' }}
-        />
-      );
+      return null; // Initializing durumunda hiçbir şey gösterme
     }
 
     if (userState.isAuthenticated) {
@@ -434,15 +389,8 @@ const ChatArea = ({ selectedChat }) => {
       );
     }
 
-    return (
-      <Chip 
-        label="Anonymous" 
-        size="small" 
-        color="info" 
-        variant="outlined"
-        sx={{ color: '#fff', borderColor: '#fff' }}
-      />
-    );
+    // Anonymous durumunda da hiçbir şey gösterme
+    return null;
   };
 
   const canInteract = !!userState.userId && !networkError;
@@ -511,18 +459,14 @@ const ChatArea = ({ selectedChat }) => {
           fullWidth
           placeholder={
             !userState.userId 
-              ? "Initializing session..."
+              ? "Oturum başlatılıyor..."
               : !selectedChat 
                 ? "Önce bir chat seçin" 
                 : "Mesajınızı yazın..."
           }
           value={newMessage}
-          onChange={(e) => {
-            console.log("Message input onChange", e.target.value);
-            setNewMessage(e.target.value);
-          }}
+          onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={(e) => {
-            console.log("Message input onKeyDown", e.key);
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
               handleSendMessage();
@@ -534,11 +478,7 @@ const ChatArea = ({ selectedChat }) => {
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
-                  onClick={(e) => {
-                    console.log("Send button clicked");
-                    e.preventDefault();
-                    handleSendMessage();
-                  }}
+                  onClick={handleSendMessage}
                   color="primary"
                   edge="end"
                   disabled={!canInteract || !selectedChat}
@@ -555,10 +495,7 @@ const ChatArea = ({ selectedChat }) => {
           </Typography>
           <Switch
             checked={webSearch}
-            onChange={(e) => {
-              console.log("Web search switch changed", e.target.checked);
-              setWebSearch(e.target.checked);
-            }}
+            onChange={(e) => setWebSearch(e.target.checked)}
             disabled={!canInteract}
             sx={{
               "& .MuiSwitch-switchBase.Mui-checked": {

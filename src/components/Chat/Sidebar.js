@@ -11,12 +11,14 @@ import {
   Button,
   Alert,
   Chip,
+  Divider,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import PersonIcon from "@mui/icons-material/Person";
 import LoginIcon from "@mui/icons-material/Login";
 import GuestIcon from "@mui/icons-material/PersonOutline";
+import HomeIcon from "@mui/icons-material/Home";
 
 import { ChatAPI, subscribeToUserState } from "../../api/apiChat"; 
 import { useNavigate } from "react-router-dom";
@@ -38,7 +40,6 @@ const Sidebar = ({ selectedChat, setSelectedChat }) => {
   // Subscribe to global user state changes
   useEffect(() => {
     const unsubscribe = subscribeToUserState((newUserState) => {
-      console.log('Sidebar: User state updated:', newUserState);
       setUserState(newUserState);
     });
 
@@ -59,18 +60,14 @@ const Sidebar = ({ selectedChat, setSelectedChat }) => {
       setError(null);
       
       try {
-        console.log('Fetching chats for user:', userState.userId);
         const response = await ChatAPI.getAllChatThreads(userState.userId);
-        console.log('Chats fetch response:', response);
         
         if (response.data.success) {
           setChats(response.data.data.threads || []);
         } else {
-          console.error('Failed to load chats:', response.data);
           setError(response.data.message || "Failed to load chats");
         }
       } catch (err) {
-        console.error('Error loading chats:', err);
         if (err.response?.status === 403) {
           setError("Authentication required to load chats");
         } else {
@@ -90,12 +87,9 @@ const Sidebar = ({ selectedChat, setSelectedChat }) => {
       setLoading(true);
       setError(null);
       
-      console.log('Starting anonymous session...');
-      const anonymousSession = await ChatAPI.ensureAnonymousSession();
-      console.log('Anonymous session started:', anonymousSession);
+      await ChatAPI.ensureAnonymousSession();
       
     } catch (error) {
-      console.error('Failed to start anonymous session:', error);
       setError('Failed to start anonymous session');
     } finally {
       setLoading(false);
@@ -118,18 +112,10 @@ const Sidebar = ({ selectedChat, setSelectedChat }) => {
     setError(null);
 
     try {
-      console.log("Creating chat:", {
-        chatName: newChatTitle.trim(),
-        userId: userState.userId,
-        userMode: userState.isAuthenticated ? 'authenticated' : 'anonymous'
-      });
-      
       const response = await ChatAPI.createChatThread({
         chatName: newChatTitle.trim(),
         userId: userState.userId
       });
-      
-      console.log("createChatThread response:", response);
       
       if (response.data.success) {
         setChats((prevChats) => [...prevChats, response.data.data.chat]);
@@ -139,8 +125,6 @@ const Sidebar = ({ selectedChat, setSelectedChat }) => {
         setError(response.data.message || "Failed to create chat");
       }
     } catch (err) {
-      console.error("createChatThread error:", err);
-      
       if (err.response?.status === 403) {
         setError("Authentication required to create chats");
       } else {
@@ -170,7 +154,6 @@ const Sidebar = ({ selectedChat, setSelectedChat }) => {
         setError(response.data.message || "Failed to delete chat");
       }
     } catch (err) {
-      console.error("deleteChatThread error:", err);
       setError(err.message || "Error deleting chat");
     } finally {
       setLoading(false);
@@ -286,9 +269,24 @@ const Sidebar = ({ selectedChat, setSelectedChat }) => {
       }}
     >
       <Box sx={{ p: 2 }}>
-        <Typography variant="h6" component="div" sx={{ color: "#fff", mb: 2 }}>
-          HakMate Chat
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+          <Typography variant="h6" component="div" sx={{ color: "#fff" }}>
+            HakMate Chat
+          </Typography>
+          <IconButton
+            onClick={() => navigate('/')}
+            sx={{ 
+              color: 'rgba(255,255,255,0.7)',
+              '&:hover': { 
+                color: '#fff',
+                backgroundColor: 'rgba(255,255,255,0.1)'
+              }
+            }}
+            title="Ana Sayfaya Dön"
+          >
+            <HomeIcon />
+          </IconButton>
+        </Box>
         
         <UserStatus />
 
@@ -321,14 +319,9 @@ const Sidebar = ({ selectedChat, setSelectedChat }) => {
             {error}
           </Alert>
         )}
-
-        {/* Debug info (remove in production) */}
-        {process.env.NODE_ENV === 'development' && (
-          <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)', mt: 1, display: 'block' }}>
-            User ID: {userState.userId || 'None'}
-          </Typography>
-        )}
       </Box>
+
+      <Divider sx={{ borderColor: 'rgba(255,255,255,0.1)' }} />
 
       <List sx={{ flexGrow: 1, overflow: "auto" }}>
         {loading && chats.length === 0 ? (
@@ -351,6 +344,7 @@ const Sidebar = ({ selectedChat, setSelectedChat }) => {
                     handleDeleteChat(chat.chat_id);
                   }}
                   disabled={loading}
+                  sx={{ color: 'rgba(255,255,255,0.7)' }}
                 >
                   <DeleteIcon />
                 </IconButton>
