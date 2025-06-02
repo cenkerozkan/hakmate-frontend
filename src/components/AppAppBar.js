@@ -138,9 +138,11 @@ export default function AppAppBar() {
               <Sitemark />
             </Link>
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <Button onClick={() => scrollToSection('features')} variant="text" color="info" size="small">
-                Chat
-              </Button>
+            <Link to="/chat" style={{ textDecoration: 'none' }}>
+                <Button variant="text" color="info" size="small">
+                  Chat
+                </Button>
+              </Link>
               <Link to="/law-offices" style={{ textDecoration: 'none' }}>
                 <Button variant="text" color="info" size="small">
                   Hukuk Büroları
@@ -227,7 +229,7 @@ export default function AppAppBar() {
                     <CloseRoundedIcon />
                   </IconButton>
                 </Box>
-                <MenuItem sx={{ fontSize: '1rem' }} onClick={() => { scrollToSection('features'); setOpen(false); }}>
+                <MenuItem sx={{ fontSize: '1rem' }} onClick={() => { navigate('/chat'); setOpen(false); }}>
                   Chat
                 </MenuItem>
                 <MenuItem sx={{ fontSize: '1rem' }} onClick={() => { navigate('/law-offices'); setOpen(false); }}>
