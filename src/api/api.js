@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'https://hakmate-api-cb5730a5ca15.herokuapp.com/api';
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
