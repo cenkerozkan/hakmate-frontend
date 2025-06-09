@@ -5,8 +5,6 @@ import {
   TextField,
   IconButton,
   Paper,
-  AppBar,
-  Toolbar,
   Switch,
   InputAdornment,
   Avatar,
@@ -21,7 +19,6 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import DownloadIcon from "@mui/icons-material/Download";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import HelpIcon from "@mui/icons-material/Help";
 import ErrorIcon from "@mui/icons-material/Error";
@@ -250,26 +247,6 @@ const Message = ({ type, content, isNew = false, isMobile }) => {
               )}
             </Typography>
           </Box>
-          {!isQuestion && (
-            <Box
-              sx={{
-                mt: 1,
-                display: "flex",
-                gap: 1,
-                justifyContent: "flex-end",
-              }}
-            >
-              <IconButton
-                size="small"
-                sx={{
-                  color: "#fff",
-                  padding: isMobile ? "4px" : "8px",
-                }}
-              >
-                <DownloadIcon fontSize="small" />
-              </IconButton>
-            </Box>
-          )}
         </Paper>
         {isQuestion && (
           <Avatar
@@ -665,34 +642,6 @@ const ChatArea = ({ selectedChat }) => {
         height: isMobile ? "100vh" : "auto",
       }}
     >
-      <AppBar
-        position="static"
-        sx={{
-          backgroundColor: BURGUNDY,
-          boxShadow: "none",
-        }}
-      >
-        <Toolbar
-          sx={{
-            justifyContent: "space-between",
-            minHeight: isMobile ? "56px" : "64px",
-            px: isMobile ? 1 : 3,
-          }}
-        >
-          <UserStatusIndicator />
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ fontSize: isMobile ? "1.1rem" : "1.25rem" }}
-          >
-            HakMate
-          </Typography>
-          <IconButton sx={{ color: "#fff" }}>
-            <AccountCircleIcon fontSize={isMobile ? "medium" : "large"} />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-
       <ErrorDisplay />
 
       {loading ? (

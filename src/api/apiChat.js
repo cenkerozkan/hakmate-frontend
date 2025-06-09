@@ -3,8 +3,8 @@ import axios from "axios";
 import { AuthAPI } from "./api";
 
 // Kararlılık ayarları
-const RETRY_ATTEMPTS = 2;
-const RETRY_DELAY = 500;
+// const RETRY_ATTEMPTS = 2;
+// const RETRY_DELAY = 500;
 const REQUEST_TIMEOUT = 60000;
 
 // CORS durumu tracking
@@ -12,7 +12,7 @@ let corsIssueDetected = false;
 let consecutiveAxiosFailures = 0;
 let lastSuccessfulMethod = "axios"; // 'axios' veya 'fetch'
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+// const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // Chat service axios instance
 const chatServiceAxios = axios.create({
