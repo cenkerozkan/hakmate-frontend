@@ -1,0 +1,19 @@
+# node_modules klasörü
+node_modules/
+
+# Build klasörleri
+dist/
+coverage/
+
+# Ortam dosyaları
+.env
+
+# Log dosyaları
+*.log
+
+# IDE ayarları
+.vscode/
+.DS_Store
+
+# Diğer
+package-lock.json
