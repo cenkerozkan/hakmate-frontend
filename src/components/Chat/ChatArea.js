@@ -636,16 +636,16 @@ const ChatArea = ({ selectedChat }) => {
   return (
     <Box
       sx={{
-        flexGrow: 1,
+        height: "100vh", // Ana container full height
         display: "flex",
         flexDirection: "column",
-        height: isMobile ? "100vh" : "auto",
+        overflow: "hidden", // Ana container overflow'u gizle
       }}
     >
       <ErrorDisplay />
 
       {loading ? (
-        <Box sx={{ flexGrow: 1, py: isMobile ? 2 : 3 }}>
+        <Box sx={{ flexGrow: 1, py: isMobile ? 2 : 3, overflow: "auto" }}>
           {[1, 2, 3].map((index) => (
             <MessageSkeleton key={index} isMobile={isMobile} />
           ))}
@@ -661,12 +661,14 @@ const ChatArea = ({ selectedChat }) => {
           ref={chatContainerRef}
           sx={{
             flexGrow: 1,
-            display: "flex",
-            flexDirection: "column",
-            overflow: "auto",
-            py: isMobile ? 2 : 3,
-            // Mobil için scroll optimization
+            overflowY: "auto", // Sadece Y ekseninde scroll
+            overflowX: "hidden",
+            py: isMobile ? 1 : 2,
+            // Scroll davranışını iyileştir
             WebkitOverflowScrolling: "touch",
+            scrollBehavior: "smooth",
+            // Alt padding ekle ki son mesaj görünebilsin
+            paddingBottom: isMobile ? 2 : 3,
           }}
         >
           {messages.map((message, index) => (
@@ -684,14 +686,17 @@ const ChatArea = ({ selectedChat }) => {
         </Box>
       )}
 
+      {/* Input area - flex-shrink: 0 ile sabit tut */}
       <Box
         sx={{
+          flexShrink: 0, // Input alanını sabit boyutta tut
           p: isMobile ? 1.5 : 2,
           borderTop: "1px solid rgba(255, 255, 255, 0.12)",
           display: "flex",
           gap: isMobile ? 0.5 : 1,
           alignItems: "center",
           flexWrap: isMobile ? "wrap" : "nowrap",
+          backgroundColor: "background.default", // Arka plan rengini netleştir
         }}
       >
         {!isMobile && (
