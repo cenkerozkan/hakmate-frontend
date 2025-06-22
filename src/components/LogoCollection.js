@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import { useTheme } from '@mui/system';
+import { useColorScheme } from '@mui/material/styles';
 
 const whiteLogos = [
   'https://assets-global.website-files.com/61ed56ae9da9fd7e0ef0a967/6560628e8573c43893fe0ace_Sydney-white.svg',
@@ -23,8 +23,8 @@ const darkLogos = [
 ];
 
 export default function LogoCollection() {
-  const theme = useTheme();
-  const logos = theme.palette.mode === 'light' ? darkLogos : whiteLogos;
+  const theme = useColorScheme();
+  const logos = theme.colorScheme === 'light' ? darkLogos : whiteLogos;
 
   return (
     <Box id="logoCollection" sx={{ py: { xs: 4, sm: 6 } }}>
