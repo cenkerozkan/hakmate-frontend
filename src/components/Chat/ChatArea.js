@@ -16,15 +16,16 @@ import {
   Skeleton,
   useMediaQuery,
   useTheme,
+  Tooltip,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import HelpIcon from "@mui/icons-material/Help";
 import ErrorIcon from "@mui/icons-material/Error";
 import { ChatAPI, subscribeToUserState } from "../../api/apiChat";
 import ReactMarkdown from "react-markdown";
 import PDFUpload from "./PDFUpload";
+import { useNavigate } from "react-router-dom";
 
 const BURGUNDY = "#8B1818";
 
@@ -337,6 +338,7 @@ const FAQSection = ({ onSelect, disabled, isMobile }) => (
 const ChatArea = ({ selectedChat }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const navigate = useNavigate();
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -634,6 +636,10 @@ const ChatArea = ({ selectedChat }) => {
 
   const canInteract = !!userState.userId && !networkError && !sendingMessage;
 
+  const handleFAQNavigation = () => {
+    navigate('/#faq');
+  };
+
   return (
     <Box
       sx={{
@@ -814,12 +820,6 @@ const ChatArea = ({ selectedChat }) => {
             }}
           />
         </Box>
-
-        {!isMobile && (
-          <IconButton>
-            <HelpIcon />
-          </IconButton>
-        )}
       </Box>
     </Box>
   );
