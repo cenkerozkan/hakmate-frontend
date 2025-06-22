@@ -446,6 +446,53 @@ export const ChatAPI = {
 
     return await smartSendMessage(requestBody);
   },
+
+  // PDF upload functionality
+  uploadPDF: async ({ chatId, file, fileName }) => {
+    const currentUserId = globalUserState.userId || (await ChatAPI.getCurrentUserId());
+
+    if (!currentUserId) {
+      throw new Error("User identification required for PDF upload");
+    }
+
+    if (!chatId) {
+      throw new Error("Chat ID is required for PDF upload");
+    }
+
+    if (!file || file.type !== "application/pdf") {
+      throw new Error("Only PDF files are allowed");
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const token = globalUserState.anonymousSession?.token || sessionStorage.getItem("access_token") || "fallback_token";
+
+    try {
+      const queryParams = new URLSearchParams({
+        file_name: fileName || file.name
+      });
+      
+      const response = await fetch(`https://hakmate.cenkerozkan.com/api/chat_service/upload_pdf/${chatId}?${queryParams}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || `Upload failed with status ${response.status}`);
+      }
+
+      return data;
+    } catch (error) {
+      console.error("PDF upload error:", error);
+      throw error;
+    }
+  },
 };
 
 export default chatServiceAxios;

@@ -2,6 +2,33 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Features
+
+### PDF Upload Functionality
+
+The chat application includes a PDF upload feature that allows users to upload PDF documents to their chat threads. Here are the key features:
+
+- **File Type Validation**: Only PDF files are accepted
+- **File Size Limit**: Maximum file size of 10MB
+- **Upload Limit**: Maximum 3 PDFs per chat thread
+- **Real-time Feedback**: Success and error notifications
+- **Mobile Support**: Works on both desktop and mobile devices
+
+#### How to Use PDF Upload:
+
+1. Select a chat thread
+2. Click the upload icon (📎) next to the message input
+3. Choose a PDF file from your device
+4. The file will be automatically uploaded and associated with the chat
+5. You'll receive a success notification when the upload is complete
+
+#### API Endpoint:
+
+The PDF upload uses the following API endpoint:
+- **POST** `/api/chat_service/upload_pdf/{chat_id}`
+- **Content-Type**: `multipart/form-data`
+- **Required Fields**: `file` (PDF file), `file_name` (string)
+
 ## Available Scripts
 
 In the project directory, you can run:

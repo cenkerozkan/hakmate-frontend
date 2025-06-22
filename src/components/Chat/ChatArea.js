@@ -24,6 +24,7 @@ import HelpIcon from "@mui/icons-material/Help";
 import ErrorIcon from "@mui/icons-material/Error";
 import { ChatAPI, subscribeToUserState } from "../../api/apiChat";
 import ReactMarkdown from "react-markdown";
+import PDFUpload from "./PDFUpload";
 
 const BURGUNDY = "#8B1818";
 
@@ -700,9 +701,18 @@ const ChatArea = ({ selectedChat }) => {
         }}
       >
         {!isMobile && (
-          <IconButton color="primary">
-            <UploadFileIcon />
-          </IconButton>
+          <PDFUpload
+            chatId={selectedChat}
+            disabled={!canInteract || !selectedChat}
+            onUploadSuccess={(result) => {
+              console.log("PDF uploaded successfully:", result);
+              // Optionally refresh chat history or show success message
+            }}
+            onUploadError={(error) => {
+              console.error("PDF upload failed:", error);
+              // Error is already handled by the PDFUpload component
+            }}
+          />
         )}
 
         <TextField
@@ -767,6 +777,21 @@ const ChatArea = ({ selectedChat }) => {
             }),
           }}
         >
+          {isMobile && (
+            <PDFUpload
+              chatId={selectedChat}
+              disabled={!canInteract || !selectedChat}
+              onUploadSuccess={(result) => {
+                console.log("PDF uploaded successfully:", result);
+                // Optionally refresh chat history or show success message
+              }}
+              onUploadError={(error) => {
+                console.error("PDF upload failed:", error);
+                // Error is already handled by the PDFUpload component
+              }}
+            />
+          )}
+          
           <Typography
             variant="body2"
             color="text.secondary"
