@@ -63,7 +63,6 @@ export default function SignInCard() {
 
   // Şifre sıfırlama modalını açarken
   const handleClickOpen = () => {
-   
     setOpen(true);
   };
 

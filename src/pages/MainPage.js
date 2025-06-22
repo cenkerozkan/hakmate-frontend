@@ -13,6 +13,7 @@ import Footer from "../components/Footer";
 
 export default function MainPage(props) {
   return (
+    //Gece gündüz teması için
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <AppAppBar />

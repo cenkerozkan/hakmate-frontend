@@ -1,17 +1,19 @@
-import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import IconButton from '@mui/material/IconButton';
+import React, { useState, useEffect } from 'react';
+import {
+  Container,
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  CardHeader,
+  Avatar,
+  IconButton,
+  useTheme,
+} from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { useTheme } from '@mui/system';
-import { useState, useEffect } from 'react';
 
+// Ensure your image paths are publicly accessible URLs
 const userTestimonials = [
   {
     avatar: <Avatar alt="Mehmet Demir" src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=150" />,
@@ -21,35 +23,35 @@ const userTestimonials = [
       "Özellikle karmaşık davaların hazırlık sürecinde Hukukmate vazgeçilmez bir asistan haline geldi. Yapay zeka ile desteklenmiş platform, emsal kararlara erişimi demokratikleştiriyor.",
   },
   {
-    avatar: <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />,
+    avatar: <Avatar alt="Travis Howard" src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150" />,
     name: 'Travis Howard',
     occupation: 'Avukat, Howard & Partners',
     testimonial:
       "Hukukmate'in kullanıcı dostu arayüzü ve hızlı veri erişimi, dava hazırlığında ciddi zaman kazandırıyor. Özellikle içtihat taraması artık çok daha verimli.",
   },
   {
-    avatar: <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />,
+    avatar: <Avatar alt="Cindy Baker" src="https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=150" />,
     name: 'Cindy Baker',
     occupation: 'CTO, LegalTech Solutions',
     testimonial:
       "Yapay zekâ destekli analiz motoru sayesinde müvekkil dosyalarını kısa sürede anlamlandırabiliyoruz. Hukukmate, dijital dönüşümün gerçek karşılığı.",
   },
   {
-    avatar: <Avatar alt="Remy Sharp" src="/static/images/avatar/4.jpg" />,
+    avatar: <Avatar alt="Julia Stewart" src="https://images.pexels.com/photos/1065084/pexels-photo-1065084.jpeg?auto=compress&cs=tinysrgb&w=150" />,
     name: 'Julia Stewart',
     occupation: 'Kıdemli Hukuk Danışmanı',
     testimonial:
       "Platformun detaylara verdiği önem ve sadeleştirilmiş hukuk dili sayesinde, ekip içi değerlendirmelerde büyük kolaylık sağlıyor.",
   },
   {
-    avatar: <Avatar alt="Travis Howard" src="/static/images/avatar/5.jpg" />,
+    avatar: <Avatar alt="John Smith" src="https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150" />,
     name: 'John Smith',
     occupation: 'Ürün Yöneticisi, LegalWorks',
     testimonial:
       "Farklı hukuk teknolojilerini denedim, ancak Hukukmate özgün özellikleriyle öne çıkıyor. Özellikle karar analizleri benzersiz düzeyde derinlik sunuyor.",
   },
   {
-    avatar: <Avatar alt="Cindy Baker" src="/static/images/avatar/6.jpg" />,
+    avatar: <Avatar alt="Daniel Wolf" src="https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg?auto=compress&cs=tinysrgb&w=150" />,
     name: 'Daniel Wolf',
     occupation: 'CDO, Dijital Hukuk Ağı',
     testimonial:
@@ -57,13 +59,22 @@ const userTestimonials = [
   },
 ];
 
-
-
 export default function Testimonials() {
   const theme = useTheme();
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(3);
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Pad the testimonials array for infinite looping effect
+  // We add 'cardsToShow' elements to both ends of the array.
+  const totalTestimonials = userTestimonials.length;
+  const paddedTestimonials = [
+    ...userTestimonials.slice(-cardsToShow), // Elements from the end
+    ...userTestimonials, // Original elements
+    ...userTestimonials.slice(0, cardsToShow), // Elements from the beginning
+  ];
+
+  // Initial index points to the start of the *original* testimonials within the padded array
+  const [currentIndex, setCurrentIndex] = useState(cardsToShow);
 
   // Responsive card count
   useEffect(() => {
@@ -82,44 +93,58 @@ export default function Testimonials() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Update currentIndex when cardsToShow changes, to keep the visible window correct
+  useEffect(() => {
+    setCurrentIndex(cardsToShow);
+  }, [cardsToShow]);
+
+
+  const handleTransitionEnd = () => {
+    setIsTransitioning(false);
+    // If we've transitioned to the duplicate beginning, jump to the real beginning
+    if (currentIndex >= totalTestimonials + cardsToShow) {
+      setCurrentIndex(cardsToShow); // Jump to the start of the original testimonials
+    } 
+    // If we've transitioned to the duplicate end, jump to the real end
+    else if (currentIndex < cardsToShow) {
+      setCurrentIndex(totalTestimonials + currentIndex); // Jump to the end of the original testimonials
+    }
+  };
+
   const nextSlide = () => {
     if (isTransitioning) return;
     setIsTransitioning(true);
-    
-    setTimeout(() => {
-      setCurrentIndex((prevIndex) => 
-        prevIndex + cardsToShow >= userTestimonials.length ? 0 : prevIndex + 1
-      );
-      setIsTransitioning(false);
-    }, 50);
+    setCurrentIndex((prevIndex) => prevIndex + 1); // Move by one card
   };
 
   const prevSlide = () => {
     if (isTransitioning) return;
     setIsTransitioning(true);
-    
-    setTimeout(() => {
-      setCurrentIndex((prevIndex) => 
-        prevIndex === 0 ? Math.max(0, userTestimonials.length - cardsToShow) : prevIndex - 1
-      );
-      setIsTransitioning(false);
-    }, 50);
+    setCurrentIndex((prevIndex) => prevIndex - 1); // Move by one card
   };
 
-  // Auto-play functionality (optional)
+  // Auto-play functionality
   useEffect(() => {
     const interval = setInterval(nextSlide, 5000);
     return () => clearInterval(interval);
-  }, [cardsToShow]);
+  }, [currentIndex, isTransitioning]); // Depend on currentIndex and isTransitioning
 
-  const getVisibleTestimonials = () => {
-    const visibleCards = [];
-    for (let i = 0; i < cardsToShow; i++) {
-      const index = (currentIndex + i) % userTestimonials.length;
-      visibleCards.push(userTestimonials[index]);
-    }
-    return visibleCards;
+  const getTransformValue = () => {
+    const cardWidthPercentage = 100 / (paddedTestimonials.length / cardsToShow);
+    return `translateX(-${(currentIndex * (100 / paddedTestimonials.length))}%)`;
   };
+
+  // Calculate the dot indicator position
+  const getDotIndex = () => {
+    let dotIndex = (currentIndex - cardsToShow);
+    if (dotIndex < 0) {
+      dotIndex += totalTestimonials;
+    } else if (dotIndex >= totalTestimonials) {
+      dotIndex -= totalTestimonials;
+    }
+    return Math.floor(dotIndex / cardsToShow);
+  };
+
 
   return (
     <Container
@@ -225,18 +250,22 @@ export default function Testimonials() {
           <Box
             sx={{
               display: 'flex',
-              transform: `translateX(-${(currentIndex * 100) / cardsToShow}%)`,
-              transition: 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-              width: `${(userTestimonials.length * 100) / cardsToShow}%`,
+              width: `${(paddedTestimonials.length / cardsToShow) * 100}%`, // Total width for all padded cards
+              transform: getTransformValue(),
+              transition: isTransitioning ? 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none', // Apply transition only when moving
+              justifyContent: 'flex-start', // Align items to the start
             }}
+            onTransitionEnd={handleTransitionEnd}
           >
-            {userTestimonials.map((testimonial, index) => (
+            {paddedTestimonials.map((testimonial, index) => (
               <Box
-                key={`${testimonial.name}-${index}`}
+                key={`${testimonial.name}-${index}-padded`} // Unique key for padded array
                 sx={{
-                  flex: `0 0 ${100 / userTestimonials.length}%`,
+                  flex: `0 0 ${100 / paddedTestimonials.length}%`, // Each card takes its calculated width
                   px: 1,
                   display: 'flex',
+                  // Ensure consistent sizing across all cards
+                  width: `${100 / cardsToShow}%`, 
                 }}
               >
                 <Card
@@ -297,18 +326,22 @@ export default function Testimonials() {
             gap: 1.5,
           }}
         >
-          {Array.from({ length: Math.ceil(userTestimonials.length / cardsToShow) }).map((_, index) => (
+          {Array.from({ length: Math.ceil(totalTestimonials / cardsToShow) }).map((_, index) => (
             <Box
               key={index}
-              onClick={() => !isTransitioning && setCurrentIndex(index * cardsToShow)}
+              onClick={() => {
+                if (!isTransitioning) {
+                  setCurrentIndex(cardsToShow + (index * cardsToShow));
+                }
+              }}
               sx={{
-                width: Math.floor(currentIndex / cardsToShow) === index ? 24 : 8,
+                width: getDotIndex() === index ? 24 : 8,
                 height: 8,
                 borderRadius: 4,
-                backgroundColor: Math.floor(currentIndex / cardsToShow) === index ? 'primary.main' : 'action.disabled',
+                backgroundColor: getDotIndex() === index ? 'primary.main' : 'action.disabled',
                 cursor: 'pointer',
                 transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                transform: Math.floor(currentIndex / cardsToShow) === index ? 'scale(1.2)' : 'scale(1)',
+                transform: getDotIndex() === index ? 'scale(1.2)' : 'scale(1)',
                 '&:hover': {
                   backgroundColor: 'primary.main',
                   transform: 'scale(1.2)',

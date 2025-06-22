@@ -84,7 +84,16 @@ export default function SignUp(props) {
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
   const [lastNameError, setLastNameError] = React.useState(false);
   const [lastNameErrorMessage, setLastNameErrorMessage] = React.useState('');
+  const [kvkkChecked, setKvkkChecked] = React.useState(false);
+  const [kvkkError, setKvkkError] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+
+  const handleKvkkChange = (event) => {
+    setKvkkChecked(event.target.checked);
+    if (event.target.checked) {
+      setKvkkError(false);
+    }
+  };
 
   const validateInputs = () => {
     const email = document.getElementById('email');
@@ -94,6 +103,7 @@ export default function SignUp(props) {
 
     let isValid = true;
 
+    // Email Validasyonu
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
       setEmailErrorMessage('Lütfen geçerli bir e-posta adresi giriniz.');
@@ -103,6 +113,7 @@ export default function SignUp(props) {
       setEmailErrorMessage('');
     }
 
+    // Şifre Validasyonu
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage('Şifre en az 6 karakter uzunluğunda olmalıdır.');
@@ -112,6 +123,7 @@ export default function SignUp(props) {
       setPasswordErrorMessage('');
     }
 
+    // İsim Validasyonu
     if (!name.value || name.value.length < 1) {
       setNameError(true);
       setNameErrorMessage('İsim girilmesi zorunludur.');
@@ -121,6 +133,7 @@ export default function SignUp(props) {
       setNameErrorMessage('');
     }
 
+    // Soyisim Validasyonu
     if (!lastName.value || lastName.value.length < 1) {
       setLastNameError(true);
       setLastNameErrorMessage('Soyisim girilmesi zorunludur.');
@@ -130,13 +143,24 @@ export default function SignUp(props) {
       setLastNameErrorMessage('');
     }
 
+    // KVKK Checkbox Validasyonu
+    if (!kvkkChecked) {
+      setKvkkError(true);
+      showError('Kişisel verilerinizin işlenmesini kabul etmelisiniz.');
+      isValid = false;
+    } else {
+      setKvkkError(false);
+    }
+
     return isValid;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!validateInputs()) return;
+    if (!validateInputs()) {
+      return; // Eğer validasyon başarısız olursa submit etme
+    }
 
     setIsLoading(true);
 
@@ -173,12 +197,8 @@ export default function SignUp(props) {
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <AppAppBar />
-      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
-          <Link href="/">
-            <SitemarkIcon style={{ pointerEvents: 'auto', cursor: 'pointer' }} />
-          </Link>
           <Typography
             component="h1"
             variant="h4"
@@ -249,14 +269,26 @@ export default function SignUp(props) {
               />
             </FormControl>
             <FormControlLabel
-              control={<Checkbox value="allowExtraEmails" color="primary" />}
+              control={
+                <Checkbox 
+                  value="kvkkApproval"
+                  color="primary" 
+                  checked={kvkkChecked}
+                  onChange={handleKvkkChange}
+                />
+              }
               label={
-                <Typography variant="body2">
+                <Typography variant="body2" color={kvkkError ? 'error' : 'text.secondary'}>
                   Kişisel verilerinizin anonim olarak analiz amaçlı kullanılmasını kabul ediyorsunuz.
                 </Typography>
               }
               disabled={isLoading}
             />
+            {kvkkError && (
+              <Typography variant="caption" color="error" sx={{ mt: -1, ml: 4 }}>
+                KVKK onayını vermeniz gerekmektedir.
+              </Typography>
+            )}
             <Button 
               type="submit" 
               fullWidth 

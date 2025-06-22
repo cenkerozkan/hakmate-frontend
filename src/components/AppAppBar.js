@@ -104,7 +104,6 @@ export default function AppAppBar() {
       sessionStorage.removeItem('access_token');
       setUser(null);
       navigate('/sign-in', { replace: true });
-      window.location.reload(); // Giriş yapıldıktan sonra sayfayı yenile
     } catch (error) {
       console.error('Çıkış yaparken hata:', error);
     }

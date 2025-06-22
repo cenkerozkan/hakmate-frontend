@@ -12,7 +12,6 @@ export default function SignInSide(props) {
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <AppAppBar />
-      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
       <Stack
         direction="column"
         component="main"
@@ -20,7 +19,6 @@ export default function SignInSide(props) {
           {
             justifyContent: 'center',
             height: 'calc((1 - var(--template-frame-height, 0)) * 100%)',
-            marginTop: 'max(40px - var(--template-frame-height, 0px), 0px)',
             minHeight: '100%',
           },
           (theme) => ({
@@ -55,7 +53,6 @@ export default function SignInSide(props) {
             sx={{
               justifyContent: 'center',
               gap: { xs: 6, sm: 12 },
-              p: { xs: 2, sm: 4 },
               m: 'auto',
             }}
           >

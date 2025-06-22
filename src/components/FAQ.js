@@ -75,31 +75,7 @@ export default function FAQ() {
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel2d-content"
             id="panel2d-header"
-          >
-            {/* <Typography component="span" variant="subtitle2">
-              Ürünü iade edebilir miyim?
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography
-              variant="body2"
-              gutterBottom
-              sx={{ maxWidth: { sm: '100%', md: '70%' } }}
-            >
-              Elbette. Memnun kalmazsanız, 1 gün içinde koşulsuz iade veya paket 
-              değişikliği yapabilirsiniz. Müşteri memnuniyeti önceliğimizdir.
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-        <Accordion
-          expanded={expanded.includes('panel3')}
-          onChange={handleChange('panel3')}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel3d-content"
-            id="panel3d-header"
-          > */}
+          > 
             <Typography component="span" variant="subtitle2">
               Hakmate’i benzerlerinden ayıran nedir?
             </Typography>
@@ -117,13 +93,13 @@ export default function FAQ() {
           </AccordionDetails>
         </Accordion>
         <Accordion
-          expanded={expanded.includes('panel4')}
-          onChange={handleChange('panel4')}
+          expanded={expanded.includes('panel3')}
+          onChange={handleChange('panel3')}
         >
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel4d-content"
-            id="panel4d-header"
+            aria-controls="panel3d-content"
+            id="panel3d-header"
           >
             <Typography component="span" variant="subtitle2">
               Hakmate’den en iyi şekilde nasıl faydalanabilirim?
